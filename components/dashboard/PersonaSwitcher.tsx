@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 import { UserCheck, Sparkles } from "lucide-react";
-import { MOCK_STUDENTS, Student } from "@/lib/mock-data";
+import { MOCK_STUDENTS } from "@/lib/mock-data";
+import { useAuth } from "@/lib/auth-context";
 
 export interface PersonaSwitcherProps {
   currentStudentId: string;
@@ -11,12 +14,19 @@ export function PersonaSwitcher({
   currentStudentId,
   onSelectStudent,
 }: PersonaSwitcherProps) {
+  const { user, isAnonymous } = useAuth();
+
+  // If user is authenticated with a real Google account, hide demo persona switcher
+  if (user && !isAnonymous) {
+    return null;
+  }
+
   return (
-    <div className="w-full bg-slate-950 border-b border-amber-500/30 px-3 py-2 text-xs">
+    <div className="w-full bg-slate-900 border-b border-orange-200 px-3 py-2 text-xs text-white">
       <div className="mx-auto max-w-5xl flex flex-col xs:flex-row items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 text-amber-400 font-semibold">
-          <Sparkles className="h-3.5 w-3.5" />
-          <span>QA Persona Preview Bar:</span>
+        <div className="flex items-center gap-1.5 text-orange-400 font-semibold">
+          <Sparkles className="h-3.5 w-3.5 text-orange-400" />
+          <span>Dev QA Persona Switcher:</span>
         </div>
 
         <div className="flex items-center gap-1.5 overflow-x-auto w-full xs:w-auto pb-1 xs:pb-0">
@@ -34,8 +44,8 @@ export function PersonaSwitcher({
                 onClick={() => onSelectStudent(student.id)}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-all text-[11px] whitespace-nowrap flex items-center gap-1 ${
                   isActive
-                    ? "bg-amber-500 text-slate-950 font-extrabold shadow-sm"
-                    : "bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white border border-slate-800"
+                    ? "bg-orange-500 text-white font-extrabold shadow-xs"
+                    : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700"
                 }`}
               >
                 {isActive && <UserCheck className="h-3 w-3" />}

@@ -97,10 +97,25 @@ This document logs all user prompts, requirements, and instructions provided thr
 
 - **Goal & Category:** Mobile UX & Profile/Settings Management
 - **Summary:** Build a clean mobile bottom navigation bar with explicit Home button (`/`), hide demo account switcher when user is signed in, and create a full-featured Student Profile & Account Settings page (`/profile`).
-- **Action Taken:** Logged prompt; initiating planning and execution workflow.
-- **Status:** ⏳ In Progress
+- **Action Taken:** Created `MobileBottomNav.tsx` with Home, Dashboard, Challenge, and Profile tabs, updated `Navbar.tsx` with explicit Home link and Profile menu button, updated `PersonaSwitcher.tsx` to automatically hide demo personas when logged in, built `/profile` route (`app/profile/page.tsx`) with live profile editing, streak stats, Google linking, and sign out, and verified production build.
+- **Status:** ✅ Completed
 
 ---
+
+### Prompt #11: Mobile Top Navbar Layout Redesign & Decluttering
+- **Timestamp:** 2026-08-08 08:41 (IST)
+- **User Prompt:**
+  > "the claim account and dashbord and more o the top nav bar not looking god in mboible so arrange and redesing .. so liiks cleaner in miles"
+
+- **Goal & Category:** Mobile Top Header UI/UX Optimization
+- **Summary:** Simplify top navbar (`components/landing/Navbar.tsx`) on mobile screens by removing redundant text buttons (delegating tab navigation to bottom navbar) and displaying a single sleek brand logo + compact user/auth button.
+- **Action Taken:** Redesigned `components/landing/Navbar.tsx` for ultra-clean mobile header layout with compact user avatar / "Claim" triggers, delegating full tab navigation to `MobileBottomNav.tsx`, and verified production build.
+- **Status:** ✅ Completed
+
+---
+
+
+
 
 
 
