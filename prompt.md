@@ -19,7 +19,7 @@ This document logs all user prompts, requirements, and instructions provided thr
 ---
 
 ### Prompt #4: Open Website / Local Preview
-- **Timestamp:** 2026-08-08 07:54 (IST)
+- **Timestamp:** 2026-08-08 08:54 (IST)
 - **User Prompt:**
   > "open the website ."
 
@@ -31,7 +31,7 @@ This document logs all user prompts, requirements, and instructions provided thr
 ---
 
 ### Prompt #5: Phase 3 - Challenge Day (/day/12) + Submission Flow + Firebase Auth (Google + Anonymous)
-- **Timestamp:** 2026-08-08 07:56 (IST)
+- **Timestamp:** 2026-08-08 09:56 (IST)
 - **User Prompt:**
   > "ABTALKS REDESIGN — PART 3 OF 3: Challenge Day (/day/12) + Submission Flow + Firebase Auth (Google + Anonymous) ... Wire real Firebase Auth, Firestore security rules, /day/[dayNumber] interactive submission flow with /day/12 rich seeding, Anonymous to Google account upgrading, and update PRODUCT_NOTES.md ..."
 
@@ -43,7 +43,7 @@ This document logs all user prompts, requirements, and instructions provided thr
 ---
 
 ### Prompt #6: Design Refinement, Squarish Rounded Cards, Top Login Button & Premium Bright Aesthetics
-- **Timestamp:** 2026-08-08 08:07 (IST)
+- **Timestamp:** 2026-08-08 10:07 (IST)
 - **User Prompt:**
   > "refine the desing and rearrange the things also add the login buton on top and make the desing squarish and boxes squarish with round corners .. more premium bright desing .. and professioanl"
 
@@ -55,7 +55,7 @@ This document logs all user prompts, requirements, and instructions provided thr
 ---
 
 ### Prompt #7: Firebase Auth Error Handling (auth/popup-closed-by-user)
-- **Timestamp:** 2026-08-08 08:18 (IST)
+- **Timestamp:** 2026-08-08 10:18 (IST)
 - **User Prompt:**
   > "Firebase: Error (auth/popup-closed-by-user)."
 
@@ -67,7 +67,7 @@ This document logs all user prompts, requirements, and instructions provided thr
 ---
 
 ### Prompt #8: Phase 4 - Replace Mock Data with Live Firestore Everywhere (8 Data-Layer Fixes)
-- **Timestamp:** 2026-08-08 08:19 (IST)
+- **Timestamp:** 2026-08-08 10:19 (IST)
 - **User Prompt:**
   > "ABTALKS REDESIGN — PART 4: Wire It For Real: Replace Mock Data With Live Firestore Everywhere ... Fix 1: Real submission writes to Firestore ... Fix 2: Pure computeStreakStats helper in lib/streak.ts ... Fix 3: Dashboard, progress grid, day page read live Firestore collections ... Fix 4: Seed all 60 challenge days in seed-firestore.ts ... Fix 5: Public profile page reads live student doc with non-existent state ... Fix 6: Persona switcher hidden in production NODE_ENV check ... Fix 7: True linkWithCredential account linking ... Fix 8: Loading skeletons instead of fake data fallbacks ... Update PRODUCT_NOTES.md ..."
 
@@ -79,7 +79,7 @@ This document logs all user prompts, requirements, and instructions provided thr
 ---
 
 ### Prompt #9: Professional Light Theme Redesign & Mobile UI/UX Upgrade
-- **Timestamp:** 2026-08-08 08:33 (IST)
+- **Timestamp:** 2026-08-08 11:33 (IST)
 - **User Prompt:**
   > "make the website light theme .. also working makesure it ui ux works in mobile also .. also use professional sighs instead f kidish sighn s.. also make the arrangment of things ui bettr redesing .. also so u-grade a diffrent desing ui statment"
 
@@ -91,7 +91,7 @@ This document logs all user prompts, requirements, and instructions provided thr
 ---
 
 ### Prompt #10: Mobile Navigation Bar, Home Button, Hide Demo Accounts When Logged In & Profile Settings Page
-- **Timestamp:** 2026-08-08 08:37 (IST)
+- **Timestamp:** 2026-08-08 11:37 (IST)
 - **User Prompt:**
   > "mak mobile nvigation more eas cleaner .. and easy to handel .. also understand .. add a home button also to go to home scren also if user loginned don not show demo abccount no neec .. also add a profile where user can change settings check more things and whateverr needed .."
 
@@ -103,7 +103,7 @@ This document logs all user prompts, requirements, and instructions provided thr
 ---
 
 ### Prompt #11: Mobile Top Navbar Layout Redesign & Decluttering
-- **Timestamp:** 2026-08-08 08:41 (IST)
+- **Timestamp:** 2026-08-08 12:41 (IST)
 - **User Prompt:**
   > "the claim account and dashbord and more o the top nav bar not looking god in mboible so arrange and redesing .. so liiks cleaner in miles"
 
@@ -115,7 +115,7 @@ This document logs all user prompts, requirements, and instructions provided thr
 ---
 
 ### Prompt #12: Dashboard Light Theme Redesign, Wider Container Layout & Sparkle Icon Removal
-- **Timestamp:** 2026-08-08 08:44 (IST)
+- **Timestamp:** 2026-08-08 12:44 (IST)
 - **User Prompt:**
   > "http://localhost:3000/dashboard) apply light theme here also and update the desing .. do not use this type of sign anywhere in website .. also . ,make the section boxes little wider and better premium profrssional"
 
@@ -127,7 +127,7 @@ This document logs all user prompts, requirements, and instructions provided thr
 ---
 
 ### Prompt #13: Complete Removal of Hardcoded Dark Classes Across Dashboard Components
-- **Timestamp:** 2026-08-08 08:46 (IST)
+- **Timestamp:** 2026-08-08 13:46 (IST)
 - **User Prompt:**
   > "its sll imn dark"
 
@@ -139,7 +139,7 @@ This document logs all user prompts, requirements, and instructions provided thr
 ---
 
 ### Prompt #14: Part 4 Surgical Audit — Fix A (linkWithPopup), Fix B (Live Submissions Grid), Fix C (Dark Theme Restore)
-- **Timestamp:** 2026-08-08 08:50 (IST)
+- **Timestamp:** 2026-08-08 13:50 (IST)
 - **User Prompt:**
   > Part 4 fixed most of the mock-data problems, but an audit of the resulting code found three specific issues still open. This is a small, surgical prompt — only touch what's named below. Do not re-review or re-touch anything else in the codebase.
 
@@ -225,7 +225,7 @@ Do not add any new features, routes, or components.
 ---
 
 ### Prompt #15: Restore Premium Bright Light Theme Color Palette & SaaS Aesthetics
-- **Timestamp:** 2026-08-08 08:58 (IST)
+- **Timestamp:** 2026-08-08 14:58 (IST)
 - **User Prompt:**
   > "now th ecolour conination s soo bad thing ammake i tlike ild .."
 
@@ -237,7 +237,7 @@ Do not add any new features, routes, or components.
 ---
 
 ### Prompt #16: Fix Dashboard Subcomponent Light Theme Text Contrast & Card Backgrounds
-- **Timestamp:** 2026-08-08 09:02 (IST)
+- **Timestamp:** 2026-08-08 16:02 (IST)
 - **User Prompt:**
   > "http://localhost:3000/dashboard colours not good text not visible ... murgin in baground , theme is drk no ligh t.. correct them"
 
@@ -249,7 +249,7 @@ Do not add any new features, routes, or components.
 ---
 
 ### Prompt #17: Part 6 — Recruiter-Scannable Public Profile Redesign (/u/[studentId])
-- **Timestamp:** 2026-08-08 09:04 (IST)
+- **Timestamp:** 2026-08-08 16:04 (IST)
 - **User Prompt:**
   > "ABTALKS REDESIGN — PART 6: Fix the Public Profile's Actual Goal: Recruiter-Scannable Proof of Work ..."
 
@@ -261,7 +261,7 @@ Do not add any new features, routes, or components.
 ---
 
 ### Prompt #18: API Key Security, Firestore Security Rules & Read-Only Visitor Profile Views
-- **Timestamp:** 2026-08-08 09:21 (IST)
+- **Timestamp:** 2026-08-08 16:21 (IST)
 - **User Prompt:**
   > "secure .. all keys so o one can use them.. also wehn some on e opens public probie on any student .. sho he can view it not change it . like click on any day to see info ect"
 
@@ -273,7 +273,7 @@ Do not add any new features, routes, or components.
 ---
 
 ### Prompt #19: Submission Safety Audit — Unlocking All Days & Instant First Paint
-- **Timestamp:** 2026-08-08 09:22 (IST)
+- **Timestamp:** 2026-08-08 16:22 (IST)
 - **User Prompt:**
   > "Submission-safety fix ... Fix 1: Remove future-day lock gate on /day/[dayNumber] so all days 1-60 are freely navigable and render task content & form. Fix 2: Render real content immediately on first paint on /dashboard and /day/[dayNumber], hydrating in background without spinner blocking ..."
 
@@ -285,7 +285,7 @@ Do not add any new features, routes, or components.
 ---
 
 ### Prompt #20: Elevate Design to Premium, Professional & Ultra-Clean SaaS Standard
-- **Timestamp:** 2026-08-08 09:38 (IST)
+- **Timestamp:** 2026-08-08 16:38 (IST)
 - **User Prompt:**
   > "enhance the desing more premium profesionl and better .. cleaner"
 
@@ -297,7 +297,7 @@ Do not add any new features, routes, or components.
 ---
 
 ### Prompt #21: Redesign "Turn daily effort into hiring proof" Section & Add Visual Image Mockups
-- **Timestamp:** 2026-08-08 09:43 (IST)
+- **Timestamp:** 2026-08-08 16:43 (IST)
 - **User Prompt:**
   > "redesignn this (Turn daily effort into hiring proof.) also add images"
 
@@ -309,7 +309,7 @@ Do not add any new features, routes, or components.
 ---
 
 ### Prompt #22: Community Feed (/feed) with Ranking, Image Collages & Area Filtering
-- **Timestamp:** 2026-08-08 09:56 (IST)
+- **Timestamp:** 2026-08-08 16:56 (IST)
 - **User Prompt:**
   > "ABTALKS REDESIGN — ADD-ON: Community Feed (/feed) with Ranking, Collages & Area Filtering ..."
 
@@ -321,7 +321,7 @@ Do not add any new features, routes, or components.
 ---
 
 ### Prompt #23: Mobile Feed UX & Ergonomics Optimization (/feed)
-- **Timestamp:** 2026-08-08 10:04 (IST)
+- **Timestamp:** 2026-08-08 17:04 (IST)
 - **User Prompt:**
   > "make eed design better for mbiles .. better usability ,,"
 
@@ -333,7 +333,7 @@ Do not add any new features, routes, or components.
 ---
 
 ### Prompt #24: Compact Fixed Sort/Filter Control Strip & Feed Space Maximization (/feed)
-- **Timestamp:** 2026-08-08 10:05 (IST)
+- **Timestamp:** 2026-08-08 17:05 (IST)
 - **User Prompt:**
   > "make the trednig latest fized s feed will get more sace and make there desng more cleaner premium and preofssional"
 
@@ -345,7 +345,7 @@ Do not add any new features, routes, or components.
 ---
 
 ### Prompt #25: Convert Feed Filter Controls to Non-Sticky Minimal Single-Row Strip
-- **Timestamp:** 2026-08-08 10:06 (IST)
+- **Timestamp:** 2026-08-08 17:06 (IST)
 - **User Prompt:**
   > "no now th trednfing latrst top streak box is permanent like it does not scroll up when feel down so it blocks voew an also its not minimal too much space"
 
