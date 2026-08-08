@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LayoutDashboard, Flame, User } from "lucide-react";
+import { Home, LayoutDashboard, Flame, User, Rss } from "lucide-react";
 
 export function MobileBottomNav() {
   const pathname = usePathname();
@@ -20,6 +20,12 @@ export function MobileBottomNav() {
       href: "/dashboard",
       icon: LayoutDashboard,
       isActive: pathname.startsWith("/dashboard"),
+    },
+    {
+      name: "Feed",
+      href: "/feed",
+      icon: Rss,
+      isActive: pathname.startsWith("/feed"),
     },
     {
       name: "Challenge",
@@ -44,7 +50,7 @@ export function MobileBottomNav() {
             <Link
               key={item.name}
               href={item.href}
-              className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-colors ${
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-colors ${
                 item.isActive
                   ? "text-orange-700 font-extrabold bg-orange-50"
                   : "text-slate-500 hover:text-slate-900 font-medium"

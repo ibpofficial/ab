@@ -13,8 +13,12 @@
 
   body {
     background-color: #f8fafc;
+    background-image: radial-gradient(rgba(226, 232, 240, 0.6) 1px, transparent 1px);
+    background-size: 24px 24px;
     color: #0f172a;
     font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -24,12 +28,12 @@
   }
 }
 
-/* Light Theme Flame & Card Utility Classes */
+/* Premium Card & Flame Utility Classes */
 .squarish-card {
-  border-radius: 0.875rem; /* 14px crisp squarish with rounded corners */
-  border: 1px solid #e2e8f0;
+  border-radius: 1rem; /* 16px crisp squarish with rounded corners */
+  border: 1px solid rgba(226, 232, 240, 0.9);
   background: #ffffff;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 8px 16px -4px rgba(0, 0, 0, 0.02);
 }
 
 .flame-gradient {
@@ -43,11 +47,11 @@
 }
 
 .flame-glow {
-  box-shadow: 0 4px 14px 0 rgba(234, 88, 12, 0.35);
+  box-shadow: 0 4px 14px 0 rgba(234, 88, 12, 0.3);
 }
 
 .streak-card-glow {
-  box-shadow: 0 4px 20px -2px rgba(234, 88, 12, 0.15), 0 2px 6px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 20px -2px rgba(234, 88, 12, 0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
 }
 
 /* Animations */

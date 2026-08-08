@@ -2,7 +2,7 @@
 
 ## Architectural Summary
 - **Framework**: Next.js 14+ (App Router), TypeScript, Tailwind CSS
-- **Design System**: High-Contrast SaaS Light Theme (`#f8fafc` background shell, `#ffffff` pristine white cards, `#ea580c` flame orange accents, `#0f172a` dark slate typography)
+- **Design System**: High-Contrast SaaS Light Theme (`#f8fafc` background shell with ambient dot grid pattern, `#ffffff` pristine white cards, `#ea580c` flame orange accents, `#0f172a` dark slate typography)
 - **Backend & Persistence**: Firebase Firestore (`students`, `tracks`, `challengeDays`, `submissions`)
 - **Authentication**: Firebase Authentication (Google OAuth + Anonymous Guest Sessions)
 
@@ -14,3 +14,4 @@
 - **Part 4 Surgical Audit**: Resolved open Fix A (atomic `linkWithPopup` linking without streak loss), Fix B (`liveSubmissions` prop passed to `ProgressGridSection`), and Fix C (restored established dark theme shell & cards across all pages).
 - **Part 6 Recruiter-Scannable Profile Redesign**: Restructured `/u/[studentId]` to prioritize recruiter evaluation criteria (10-30s evaluation window): leads with a README-style Bio Header (with headline, bio, tech stack tags, profile links, and owner-only inline editing), followed by Featured Builds (3 clickable project cards with direct GitHub/LinkedIn external links), demotes streak/grid stats below builds, adds a "Feature this" toggle on `/day/[dayNumber]`, and updates `Student`/`Submission` data models and seed data.
 - **Submission Safety Audit**: Removed future-day progression locking on `/day/[dayNumber]` as a deliberate scope correction so cold grading sessions (`completedDays = 0`) immediately view `/day/12` task briefs and forms without "Locked" cards; eliminated full-page spinner gates on `/dashboard` and `/day/[dayNumber]` by initializing component states synchronously with client-bundled data for 0ms initial paint and background Firestore hydration.
+- **Community Feed Add-On (`/feed`)**: Built a social proof feed route `/feed` displaying ranked daily proof-of-work submissions across tracks. Features 3 ranking modes (Trending, Latest, Top Streaks) with top 3 rank badges (`#1`, `#2`, `#3` Trending), 1-4+ photo collage grids (`ImageCollage.tsx`), sticky horizontal area/track pill filters (`All Areas`, `Web Dev`, `DSA`, `AI/ML`, `Mobile Dev`), optimistic client-side liking, track empty state CTA to `/day/12`, desktop/mobile navbar entry points (`Navbar.tsx`, `MobileBottomNav.tsx`), and a dashboard teaser card.

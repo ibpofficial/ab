@@ -48,6 +48,20 @@ export interface Submission {
   featured?: boolean;
 }
 
+export interface FeedPost {
+  id: string;
+  studentId: string;
+  dayNumber: number;
+  track: string;
+  images: string[];
+  caption: string;
+  likes: number;
+  comments: number;
+  createdAt: string;
+  githubUrl: string;
+  linkedinUrl: string;
+}
+
 export const MOCK_TRACK_STACKS: Record<string, string[]> = {
   "web-dev": ["Next.js 14", "TypeScript", "Tailwind CSS", "React", "Node.js", "Firebase"],
   "dsa-cpp": ["C++", "Java", "Python", "Data Structures", "Algorithms", "Graph Theory"],
@@ -118,6 +132,63 @@ export const MOCK_STUDENTS: Student[] = [
     githubUsername: "rohanverma",
     milestoneBadges: [],
     percentileRank: "New Builder",
+  },
+  {
+    id: "student-4",
+    name: "Ananya Roy",
+    avatarUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
+    track: "dsa-cpp",
+    headline: "C++ & Competitive Programming Competitor",
+    bio: "Solving 2 algorithmic coding patterns daily. Focused on graph algorithms, segment trees, and dynamic programming.",
+    cohortStartDate: "2026-07-20",
+    currentStreak: 19,
+    longestStreak: 19,
+    completedDays: 19,
+    totalDays: 60,
+    lastSubmissionDate: "2026-08-07",
+    collegeName: "IIT Kharagpur",
+    githubUsername: "ananya-cpp",
+    linkedinProfile: "ananya-roy-dsa",
+    milestoneBadges: ["7-day", "14-day"],
+    percentileRank: "Top 4% DSA Track",
+  },
+  {
+    id: "student-5",
+    name: "Kabir Das",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    track: "ml-ai",
+    headline: "PyTorch & Computer Vision Researcher",
+    bio: "Training deep neural networks, fine-tuning Vision Transformers, and shipping AI pipelines daily.",
+    cohortStartDate: "2026-07-05",
+    currentStreak: 34,
+    longestStreak: 34,
+    completedDays: 34,
+    totalDays: 60,
+    lastSubmissionDate: "2026-08-07",
+    collegeName: "IIIT Hyderabad",
+    githubUsername: "kabirdas-ai",
+    linkedinProfile: "kabir-das-ml",
+    milestoneBadges: ["7-day", "14-day", "30-day"],
+    percentileRank: "Top 2% AI Cohort",
+  },
+  {
+    id: "student-6",
+    name: "Neha Gupta",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    track: "mobile-dev",
+    headline: "React Native & Expo UI Architect",
+    bio: "Building cross-platform mobile apps with fluid Gesture Handler animations and offline-first SQLite synchronization.",
+    cohortStartDate: "2026-07-27",
+    currentStreak: 12,
+    longestStreak: 12,
+    completedDays: 12,
+    totalDays: 60,
+    lastSubmissionDate: "2026-08-07",
+    collegeName: "DTU Delhi",
+    githubUsername: "nehag-mobile",
+    linkedinProfile: "neha-gupta-mobile",
+    milestoneBadges: ["7-day"],
+    percentileRank: "Top 8% Mobile Dev",
   },
 ];
 
@@ -205,7 +276,6 @@ export const MOCK_CHALLENGE_DAYS: ChallengeDay[] = Array.from({ length: 60 }, (_
 
 // Submissions history for Student 2 (Priya Patel, Day 24)
 export const MOCK_SUBMISSIONS: Submission[] = [
-  // Days 1 to 15: completed on time
   ...Array.from({ length: 15 }, (_, i) => ({
     id: `sub-2-${i + 1}`,
     studentId: "student-2",
@@ -214,9 +284,8 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     linkedinUrl: `https://linkedin.com/posts/priyapatel-builds_abtalks60-day${i + 1}`,
     submittedAt: `2026-07-${16 + i}T22:30:00Z`,
     status: "on-time" as const,
-    featured: (i + 1) === 12, // Day 12 featured
+    featured: (i + 1) === 12,
   })),
-  // Day 16: MISSED day (1 rest/missed day in history)
   {
     id: "sub-2-16",
     studentId: "student-2",
@@ -228,7 +297,6 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     notes: "Missed submission due to college mid-semester exams",
     featured: false,
   },
-  // Days 17 to 23: completed on time (rebuilt 7-day streak)
   ...Array.from({ length: 7 }, (_, i) => ({
     id: `sub-2-${i + 17}`,
     studentId: "student-2",
@@ -237,6 +305,142 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     linkedinUrl: `https://linkedin.com/posts/priyapatel-builds_abtalks60-day${i + 17}`,
     submittedAt: `2026-08-0${i + 1}T23:15:00Z`,
     status: "on-time" as const,
-    featured: (i + 17) === 22 || (i + 17) === 23, // Days 22 and 23 featured
+    featured: (i + 17) === 22 || (i + 17) === 23,
   })),
+];
+
+// Community Social Feed Posts (MOCK_FEED_POSTS)
+export const MOCK_FEED_POSTS: FeedPost[] = [
+  {
+    id: "post-1",
+    studentId: "student-5", // Kabir (AI track)
+    dayNumber: 34,
+    track: "ml-ai",
+    images: [
+      "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&auto=format&fit=crop&q=80",
+    ],
+    caption: "Day 34: Deployed a real-time Vision Transformer pipeline using PyTorch & FastAPI! Added zero-shot object detection with 45ms inference latency.",
+    likes: 86,
+    comments: 18,
+    createdAt: "2026-08-08T07:30:00Z",
+    githubUrl: "https://github.com/kabirdas-ai/vision-transformer/commit/f89a12c",
+    linkedinUrl: "https://linkedin.com/posts/kabir-das-ml_abtalks60-day34",
+  },
+  {
+    id: "post-2",
+    studentId: "student-2", // Priya (Web Dev)
+    dayNumber: 23,
+    track: "web-dev",
+    images: [
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=600&auto=format&fit=crop&q=80",
+    ],
+    caption: "Day 23: Implemented optimistic UI mutations with React Query and Zustand store. Network latency is hidden completely on submission form actions!",
+    likes: 72,
+    comments: 14,
+    createdAt: "2026-08-08T06:15:00Z",
+    githubUrl: "https://github.com/priyapatel-tech/abtalks-60/commit/e9b612a",
+    linkedinUrl: "https://linkedin.com/posts/priyapatel-builds_abtalks60-day23",
+  },
+  {
+    id: "post-3",
+    studentId: "student-4", // Ananya (DSA track)
+    dayNumber: 19,
+    track: "dsa-cpp",
+    images: [
+      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80",
+    ],
+    caption: "Day 19: Solved 2 hard graph problems on Tarjan's Strongly Connected Components algorithm in C++. Time complexity O(V+E) verified with custom test cases.",
+    likes: 54,
+    comments: 9,
+    createdAt: "2026-08-08T04:45:00Z",
+    githubUrl: "https://github.com/ananya-cpp/leetcode-patterns/commit/d41a99b",
+    linkedinUrl: "https://linkedin.com/posts/ananya-roy-dsa_abtalks60-day19",
+  },
+  {
+    id: "post-4",
+    studentId: "student-6", // Neha (Mobile track)
+    dayNumber: 12,
+    track: "mobile-dev",
+    images: [
+      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1526498460520-4c246339dccb?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=80",
+    ],
+    caption: "Day 12: Built a custom swipeable task card gesture in React Native with Reanimated 3 & Gesture Handler. Smooth 60fps performance on iOS & Android!",
+    likes: 49,
+    comments: 11,
+    createdAt: "2026-08-07T21:20:00Z",
+    githubUrl: "https://github.com/nehag-mobile/rn-gestures/commit/a19f44c",
+    linkedinUrl: "https://linkedin.com/posts/neha-gupta-mobile_abtalks60-day12",
+  },
+  {
+    id: "post-5",
+    studentId: "student-2", // Priya (Web Dev)
+    dayNumber: 12,
+    track: "web-dev",
+    images: [
+      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&auto=format&fit=crop&q=80",
+    ],
+    caption: "Day 12: Built production form validation using Next.js 14 Server Actions & Zod schema validation! Instant client feedback with server-side safety.",
+    likes: 68,
+    comments: 15,
+    createdAt: "2026-07-27T18:00:00Z",
+    githubUrl: "https://github.com/priyapatel-tech/abtalks-60/commit/c7a1289f",
+    linkedinUrl: "https://linkedin.com/posts/priyapatel-builds_abtalks60-day12",
+  },
+  {
+    id: "post-6",
+    studentId: "student-5", // Kabir (AI track)
+    dayNumber: 30,
+    track: "ml-ai",
+    images: [
+      "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=600&auto=format&fit=crop&q=80",
+    ],
+    caption: "Day 30: Unlocked 30-Day Halfway Master Milestone! Built a RAG pipeline leveraging Qdrant vector db and LlamaIndex for document Q&A.",
+    likes: 92,
+    comments: 22,
+    createdAt: "2026-08-03T14:10:00Z",
+    githubUrl: "https://github.com/kabirdas-ai/rag-pipeline/commit/c30a881",
+    linkedinUrl: "https://linkedin.com/posts/kabir-das-ml_abtalks60-day30",
+  },
+  {
+    id: "post-7",
+    studentId: "student-4", // Ananya (DSA track)
+    dayNumber: 14,
+    track: "dsa-cpp",
+    images: [
+      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=600&auto=format&fit=crop&q=80",
+    ],
+    caption: "Day 14: Mastered Segment Trees with Lazy Propagation. Solved range update queries in O(log N) time with zero memory leaks.",
+    likes: 38,
+    comments: 5,
+    createdAt: "2026-08-02T19:30:00Z",
+    githubUrl: "https://github.com/ananya-cpp/leetcode-patterns/commit/b14c99e",
+    linkedinUrl: "https://linkedin.com/posts/ananya-roy-dsa_abtalks60-day14",
+  },
+  {
+    id: "post-8",
+    studentId: "student-6", // Neha (Mobile track)
+    dayNumber: 7,
+    track: "mobile-dev",
+    images: [
+      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=600&auto=format&fit=crop&q=80",
+    ],
+    caption: "Day 7: First week milestone unlocked! Shipped offline SQLite synchronization for Expo app, persisting drafts when offline.",
+    likes: 41,
+    comments: 7,
+    createdAt: "2026-08-01T16:00:00Z",
+    githubUrl: "https://github.com/nehag-mobile/rn-gestures/commit/f7a112b",
+    linkedinUrl: "https://linkedin.com/posts/neha-gupta-mobile_abtalks60-day7",
+  },
 ];

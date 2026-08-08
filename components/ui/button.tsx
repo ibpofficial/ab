@@ -22,15 +22,15 @@ export function Button({
 
   const variants = {
     primary:
-      "flame-gradient text-white shadow-md shadow-orange-600/20 hover:shadow-orange-600/30 hover:brightness-105 border border-orange-500/30 rounded-xl",
+      "flame-gradient text-white shadow-md shadow-orange-600/20 hover:shadow-lg hover:shadow-orange-600/30 hover:brightness-105 border border-orange-500/30 rounded-xl",
     secondary:
-      "bg-slate-100 text-slate-800 border border-slate-300 hover:bg-slate-200 hover:border-slate-400 rounded-xl shadow-xs",
+      "bg-slate-100 text-slate-900 border border-slate-200 hover:bg-slate-200/80 hover:border-slate-300 rounded-xl shadow-xs",
     outline:
-      "bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 hover:border-slate-400 rounded-xl shadow-xs",
+      "bg-white text-slate-800 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 rounded-xl shadow-xs",
     ghost:
-      "bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg",
+      "bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 rounded-xl",
     google:
-      "bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 hover:border-slate-400 rounded-xl shadow-xs",
+      "bg-white text-slate-800 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 rounded-xl shadow-xs",
   };
 
   const sizes = {

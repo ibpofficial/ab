@@ -12,11 +12,14 @@ import { ProgressGridSection } from "@/components/dashboard/ProgressGridSection"
 import { AchievementsSection } from "@/components/dashboard/AchievementsSection";
 import { SecondaryDayBrowser } from "@/components/dashboard/SecondaryDayBrowser";
 import { UpgradeAccountModal } from "@/components/auth/UpgradeAccountModal";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { MOCK_STUDENTS, Student, Submission } from "@/lib/mock-data";
-import { Loader2 } from "lucide-react";
+import { Loader2, Rss, ArrowRight } from "lucide-react";
 
 function DashboardContent() {
   const searchParams = useSearchParams();
@@ -123,7 +126,36 @@ function DashboardContent() {
         {/* 4. Standing & Achievements */}
         <AchievementsSection student={activeStudent} />
 
-        {/* 5. Secondary Day Browser */}
+        {/* 5. Community Proof Feed Teaser Card */}
+        <Card className="p-5 bg-gradient-to-r from-orange-50/80 via-white to-amber-50/60 border-orange-200/90 shadow-xs space-y-3 rounded-2xl text-slate-900">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl flame-gradient text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
+                <Rss className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-extrabold text-sm text-slate-900">Live Community Proof Feed</h3>
+                  <Badge variant="flame" size="sm" className="rounded-md">
+                    Active Peers
+                  </Badge>
+                </div>
+                <p className="text-xs text-slate-600 font-medium">
+                  See what students on your track are shipping daily with 1-4 photo collages & verified proof links.
+                </p>
+              </div>
+            </div>
+
+            <Link href="/feed" className="shrink-0">
+              <Button variant="primary" size="sm" className="rounded-xl text-xs py-2 px-4 shadow-xs">
+                <span>Explore Community Feed</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            </Link>
+          </div>
+        </Card>
+
+        {/* 6. Secondary Day Browser */}
         <SecondaryDayBrowser />
       </main>
     </div>
