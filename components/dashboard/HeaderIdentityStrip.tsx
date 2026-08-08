@@ -16,7 +16,6 @@ export function HeaderIdentityStrip({ student }: HeaderIdentityStripProps) {
   const { isAnonymous, linkAnonymousToGoogle } = useAuth();
   const currentTrack = MOCK_TRACKS.find((t) => t.id === student.track);
 
-  // Derive initials fallback for missing avatarUrl
   const getInitials = (name: string) => {
     if (!name) return "ST";
     const parts = name.trim().split(" ");
@@ -25,13 +24,13 @@ export function HeaderIdentityStrip({ student }: HeaderIdentityStripProps) {
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
+    <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-slate-900/90 border border-slate-800 shadow-md text-white">
       {/* Identity Info */}
       <div className="flex items-center gap-3">
         {/* Avatar or Fallback Initials */}
         <div className="relative shrink-0">
           {student.avatarUrl ? (
-            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-orange-500/50 bg-slate-100">
+            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-amber-500/50 bg-slate-800">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={student.avatarUrl}
@@ -40,17 +39,17 @@ export function HeaderIdentityStrip({ student }: HeaderIdentityStripProps) {
               />
             </div>
           ) : (
-            <div className="h-12 w-12 rounded-xl border-2 border-orange-400/60 bg-orange-50 flex items-center justify-center font-black text-orange-700 text-sm shadow-inner">
+            <div className="h-12 w-12 rounded-xl border-2 border-amber-500/60 bg-amber-500/10 flex items-center justify-center font-black text-amber-400 text-sm shadow-inner">
               {getInitials(student.name)}
             </div>
           )}
-          <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white" />
+          <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-[#090d16]" />
         </div>
 
         {/* Details */}
         <div className="space-y-0.5">
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="font-extrabold text-base text-slate-900">{student.name}</h2>
+            <h2 className="font-extrabold text-base text-white">{student.name}</h2>
             {student.track ? (
               <Badge variant="flame" size="sm" className="rounded-lg">
                 <CheckCircle2 className="h-3 w-3" /> {currentTrack?.name || student.track}
@@ -62,17 +61,17 @@ export function HeaderIdentityStrip({ student }: HeaderIdentityStripProps) {
             )}
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-slate-600 font-medium">
+          <div className="flex items-center gap-2 text-xs text-slate-300">
             {student.collegeName && (
               <span className="flex items-center gap-1">
-                <School className="h-3.5 w-3.5 text-orange-600" />
+                <School className="h-3.5 w-3.5 text-amber-400" />
                 {student.collegeName}
               </span>
             )}
             {student.githubUsername && (
               <>
-                <span className="text-slate-300">•</span>
-                <span className="font-mono text-slate-700">@{student.githubUsername}</span>
+                <span className="text-slate-600">•</span>
+                <span className="font-mono text-slate-300">@{student.githubUsername}</span>
               </>
             )}
           </div>
@@ -86,16 +85,16 @@ export function HeaderIdentityStrip({ student }: HeaderIdentityStripProps) {
             variant="google"
             size="sm"
             onClick={linkAnonymousToGoogle}
-            className="text-xs py-1.5 px-3 border-slate-300 text-slate-800"
+            className="text-xs py-1.5 px-3 border-amber-500/40 text-slate-100"
           >
-            <LogIn className="h-3.5 w-3.5 text-orange-600" />
+            <LogIn className="h-3.5 w-3.5 text-amber-400" />
             <span>Claim Google Account</span>
           </Button>
         )}
 
         <Link href={`/u/${student.id}`}>
-          <Button variant="outline" size="sm" className="text-xs py-1.5 px-3 rounded-xl border-slate-300 text-slate-800">
-            <Share2 className="h-3.5 w-3.5 text-orange-600" />
+          <Button variant="outline" size="sm" className="text-xs py-1.5 px-3 rounded-xl">
+            <Share2 className="h-3.5 w-3.5 text-amber-400" />
             <span>Public Profile</span>
           </Button>
         </Link>

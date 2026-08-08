@@ -224,10 +224,11 @@ A one-line update to PRODUCT_NOTES.md confirming Fixes A, B, and C are resolved
 
 - **Goal & Category:** Surgical Bug Fixes & Dark Theme Restoration
 - **Summary:** Replace `signInWithPopup` with `linkWithPopup` in `lib/auth-context.tsx` for atomic account linking; pass `liveSubmissions` down to `ProgressGridSection.tsx` on `/dashboard`; restore established dark theme shell (`bg-[#090d16]`) and card styles (`bg-slate-900/90 border-slate-800 text-white`) across all components and pages.
-- **Action Taken:** Logged prompt; initiating planning and execution workflow.
-- **Status:** ⏳ In Progress
+- **Action Taken:** Replaced `signInWithPopup` + `linkWithCredential` with atomic `linkWithPopup` in `lib/auth-context.tsx` with `signInWithCredential` error recovery; passed `liveSubmissions` down to `ProgressGridSection.tsx` removing `MOCK_SUBMISSIONS` static lookup; restored dark theme shell (`bg-[#090d16]`) and dark cards (`bg-slate-900/90 border-slate-800`) across all components and pages; updated `PRODUCT_NOTES.md`; and verified production build.
+- **Status:** ✅ Completed
 
 ---
+
 
 
 

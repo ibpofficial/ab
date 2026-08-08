@@ -36,7 +36,7 @@ export function MobileBottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200 shadow-lg px-2 py-1.5">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 shadow-xl px-2 py-1.5">
       <div className="flex items-center justify-around max-w-md mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -46,13 +46,13 @@ export function MobileBottomNav() {
               href={item.href}
               className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-colors ${
                 item.isActive
-                  ? "text-orange-600 font-extrabold bg-orange-50/80"
-                  : "text-slate-500 hover:text-slate-900 font-medium"
+                  ? "text-amber-400 font-extrabold bg-amber-500/15"
+                  : "text-slate-400 hover:text-white font-medium"
               }`}
             >
               <Icon
                 className={`h-5 w-5 ${
-                  item.isActive ? "text-orange-600 fill-orange-500/20" : ""
+                  item.isActive ? "text-amber-400 fill-amber-500/20" : ""
                 }`}
               />
               <span className="text-[10px] mt-0.5 tracking-tight">{item.name}</span>

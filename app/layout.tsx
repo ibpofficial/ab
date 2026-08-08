@@ -46,9 +46,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${headingFont.variable} ${sansFont.variable} h-full antialiased selection:bg-orange-500/20 selection:text-orange-900`}
+      className={`${headingFont.variable} ${sansFont.variable} dark h-full antialiased selection:bg-amber-500/30 selection:text-amber-200`}
     >
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 font-sans antialiased overflow-x-hidden pb-16 md:pb-0">
+      <body className="min-h-full flex flex-col bg-[#090d16] text-[#f3f4f6] font-sans antialiased overflow-x-hidden pb-16 md:pb-0">
         <AuthProvider>
           {children}
           <MobileBottomNav />

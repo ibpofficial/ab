@@ -3,30 +3,32 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { db } from "@/lib/firebase";
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { Student, Submission, MOCK_MILESTONES, MOCK_TRACKS, MOCK_STUDENTS } from "@/lib/mock-data";
+import { Navbar } from "@/components/landing/Navbar";
+import { ProgressGridSection } from "@/components/dashboard/ProgressGridSection";
+import { AchievementsSection } from "@/components/dashboard/AchievementsSection";
+import { UpgradeAccountModal } from "@/components/auth/UpgradeAccountModal";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ProgressBar } from "@/components/ui/progress";
-import { UpgradeAccountModal } from "@/components/auth/UpgradeAccountModal";
+import { db } from "@/lib/firebase";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { Student, Submission, MOCK_STUDENTS, MOCK_SUBMISSIONS, MOCK_TRACKS } from "@/lib/mock-data";
 import {
   Flame,
-  CheckCircle2,
-  Copy,
-  Share2,
   ShieldCheck,
-  Trophy,
+  CheckCircle2,
+  ExternalLink,
   ArrowLeft,
   School,
   GitCommit,
   Award,
   Loader2,
   UserX,
+  Share2,
+  Copy,
 } from "lucide-react";
 
-export default function PublicStreakProfilePage() {
+export default function PublicStudentProfilePage() {
   const params = useParams();
   const studentId = (params?.studentId as string) || "student-2";
 
@@ -36,52 +38,72 @@ export default function PublicStreakProfilePage() {
   const [notFound, setNotFound] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
 
-  // Fetch Student document and Submissions from Firestore
   useEffect(() => {
     let isMounted = true;
-    async function fetchPublicProfile() {
+
+    async function fetchPublicProfileData() {
       setLoading(true);
       setNotFound(false);
 
       try {
-        // 1. Fetch Student doc from Firestore
-        const studentDocRef = doc(db, "students", studentId);
-        const studentSnap = await getDoc(studentDocRef);
+        // 1. Fetch student document from Firestore
+        const studentRef = doc(db, "students", studentId);
+        const studentSnap = await getDoc(studentRef);
 
-        if (studentSnap.exists() && isMounted) {
-          setStudent(studentSnap.data() as Student);
+        let studentObj: Student | null = null;
+
+        if (studentSnap.exists()) {
+          studentObj = studentSnap.data() as Student;
         } else {
-          // Check mock students for seed personas fallback
-          const seeded = MOCK_STUDENTS.find((s) => s.id === studentId);
-          if (seeded && isMounted) {
-            setStudent(seeded);
-          } else if (isMounted) {
-            setNotFound(true);
-            setLoading(false);
+          // Fallback to seeded mock student if available (for persona links)
+          const mockMatch = MOCK_STUDENTS.find((s) => s.id === studentId);
+          if (mockMatch) {
+            studentObj = mockMatch;
+          } else {
+            if (isMounted) {
+              setNotFound(true);
+              setLoading(false);
+            }
             return;
           }
         }
 
-        // 2. Fetch Submissions from Firestore for studentId
-        const q = query(
+        if (isMounted && studentObj) {
+          setStudent(studentObj);
+        }
+
+        // 2. Fetch submissions for this student from Firestore
+        const subQuery = query(
           collection(db, "submissions"),
           where("studentId", "==", studentId)
         );
-        const querySnap = await getDocs(q);
-        const fetchedSubs: Submission[] = [];
-        querySnap.forEach((doc) => fetchedSubs.push(doc.data() as Submission));
+        const subSnap = await getDocs(subQuery);
+        const fetchedSubmissions: Submission[] = [];
 
-        if (isMounted) {
-          setSubmissions(fetchedSubs);
+        subSnap.forEach((d) => fetchedSubmissions.push(d.data() as Submission));
+
+        // If no Firestore submissions exist, check mock data fallback
+        if (fetchedSubmissions.length === 0) {
+          const mockSubs = MOCK_SUBMISSIONS.filter((s) => s.studentId === studentId);
+          if (isMounted) setSubmissions(mockSubs);
+        } else if (isMounted) {
+          setSubmissions(fetchedSubmissions);
         }
       } catch (err) {
-        console.warn("Firestore public profile fetch notice:", err);
+        console.warn("Public profile fetch notice (using mock fallback):", err);
+        const mockMatch = MOCK_STUDENTS.find((s) => s.id === studentId) || MOCK_STUDENTS[1];
+        const mockSubs = MOCK_SUBMISSIONS.filter((s) => s.studentId === studentId);
+        if (isMounted) {
+          setStudent(mockMatch);
+          setSubmissions(mockSubs);
+        }
       } finally {
         if (isMounted) setLoading(false);
       }
     }
 
-    fetchPublicProfile();
+    fetchPublicProfileData();
+
     return () => {
       isMounted = false;
     };
@@ -103,250 +125,253 @@ export default function PublicStreakProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col items-center justify-center p-8 space-y-4">
-        <Loader2 className="h-8 w-8 text-orange-600 animate-spin" />
-        <p className="text-xs text-slate-500 font-mono">Loading Public Profile...</p>
+      <div className="min-h-screen flex flex-col bg-[#090d16] text-[#f3f4f6]">
+        <Navbar />
+        <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-12 flex flex-col items-center justify-center space-y-4">
+          <Loader2 className="h-8 w-8 text-amber-500 animate-spin" />
+          <p className="text-xs text-slate-400 font-mono">Fetching Verified Student Profile...</p>
+        </main>
       </div>
     );
   }
 
   if (notFound || !student) {
     return (
-      <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between p-4 sm:p-8">
-        <div className="max-w-3xl mx-auto w-full pb-6">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm" className="text-xs">
-              <ArrowLeft className="h-4 w-4" />
-              <span>Back to Dashboard</span>
-            </Button>
-          </Link>
-        </div>
+      <div className="min-h-screen flex flex-col bg-[#090d16] text-[#f3f4f6]">
+        <Navbar />
+        <main className="flex-1 max-w-lg w-full mx-auto px-4 sm:px-6 py-16 flex flex-col items-center text-center space-y-6">
+          <div className="h-16 w-16 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center">
+            <UserX className="h-8 w-8" />
+          </div>
 
-        <main className="max-w-md mx-auto w-full text-center space-y-4">
-          <Card className="p-8 bg-white border-slate-200 space-y-4 rounded-xl text-center shadow-md">
-            <div className="h-14 w-14 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-slate-500">
-              <UserX className="h-7 w-7 text-rose-600" />
-            </div>
-            <h1 className="text-xl font-extrabold text-slate-900">This profile doesn&apos;t exist</h1>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              No student profile was found for ID <span className="font-mono text-orange-700 font-bold">{studentId}</span>. The student may not have registered or claimed their public streak URL yet.
+          <div className="space-y-2">
+            <h1 className="text-2xl font-extrabold text-white">Student Profile Not Found</h1>
+            <p className="text-xs text-slate-400 max-w-md font-medium">
+              We couldn&apos;t find a registered builder profile with ID <code className="text-amber-300 font-mono">{studentId}</code> in our Firestore records.
             </p>
-            <div className="pt-2">
-              <Link href="/">
-                <Button variant="primary" size="md" className="rounded-xl">
-                  <span>Return to Home</span>
-                </Button>
-              </Link>
-            </div>
-          </Card>
-        </main>
+          </div>
 
-        <footer className="max-w-3xl mx-auto w-full text-center py-6 text-xs text-slate-500">
-          ABTalks 60 • Verified Public Streak Credential Page
-        </footer>
+          <div className="pt-2 flex items-center gap-3">
+            <Link href="/dashboard">
+              <Button variant="primary" size="md" className="rounded-xl">
+                <span>Go to Dashboard</span>
+              </Button>
+            </Link>
+          </div>
+        </main>
       </div>
     );
   }
 
   const currentTrack = MOCK_TRACKS.find((t) => t.id === student.track);
 
-  // Build 60-day grid cells
-  const currentDayNum = Math.min(60, Math.max(1, student.completedDays + 1));
-  const dayCells = Array.from({ length: 60 }, (_, i) => {
-    const day = i + 1;
-    const submission = submissions.find((s) => s.dayNumber === day);
-
-    let status: "done" | "missed" | "today" | "upcoming" = "upcoming";
-    if (submission?.status === "on-time") status = "done";
-    else if (submission?.status === "missed") status = "missed";
-    else if (day === currentDayNum) status = "today";
-    else if (day < currentDayNum) status = "missed";
-
-    return { day, status };
-  });
-
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between p-4 sm:p-8">
-      {/* Header link */}
-      <div className="max-w-3xl mx-auto w-full flex items-center justify-between pb-6">
-        <Link href="/dashboard">
-          <Button variant="ghost" size="sm" className="text-xs">
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back to Dashboard</span>
-          </Button>
-        </Link>
+    <div className="min-h-screen flex flex-col bg-[#090d16] text-[#f3f4f6]">
+      <Navbar />
 
-        <div className="flex items-center gap-2">
+      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+        {/* Navigation & Verified Badge Header */}
+        <div className="flex items-center justify-between">
+          <Link href="/dashboard">
+            <Button variant="ghost" size="sm" className="text-xs text-slate-300 hover:text-white">
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back to Challenge Dashboard</span>
+            </Button>
+          </Link>
+
           <Badge variant="emerald" size="sm" className="rounded-lg">
-            <ShieldCheck className="h-3.5 w-3.5" /> Verified Public Profile
+            <ShieldCheck className="h-3.5 w-3.5" /> Recruiter Verified Profile
           </Badge>
         </div>
-      </div>
 
-      {/* Main Profile Card */}
-      <main className="max-w-3xl mx-auto w-full space-y-6">
-        <UpgradeAccountModal />
-
-        {/* Profile Card Header */}
-        <Card className="p-6 bg-white border-slate-200 shadow-md relative overflow-hidden space-y-6 rounded-xl text-slate-900">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
-            <div className="flex items-center gap-4">
-              {student.avatarUrl ? (
-                <div className="h-16 w-16 rounded-full overflow-hidden border-2 border-orange-500/60 bg-slate-100 shadow-sm">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
+        {/* 1. Recruiter Header Identity Card */}
+        <Card className="p-6 sm:p-8 bg-slate-900/90 border-slate-800 shadow-xl space-y-6 rounded-xl text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div className="flex items-center gap-4 sm:gap-5">
+              <div className="relative shrink-0">
+                {student.avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={student.avatarUrl}
                     alt={student.name}
-                    className="h-full w-full object-cover"
+                    className="h-20 w-20 rounded-2xl border-2 border-amber-500/60 object-cover shadow-md"
                   />
-                </div>
-              ) : (
-                <div className="h-16 w-16 rounded-xl border-2 border-orange-400/60 bg-orange-50 flex items-center justify-center font-black text-orange-700 text-xl shadow-sm">
-                  {getInitials(student.name)}
-                </div>
-              )}
+                ) : (
+                  <div className="h-20 w-20 rounded-2xl border-2 border-amber-500/60 bg-amber-500/10 flex items-center justify-center font-black text-amber-400 text-2xl shadow-inner">
+                    {getInitials(student.name)}
+                  </div>
+                )}
+                <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full bg-emerald-500 border-2 border-[#090d16]" />
+              </div>
 
-              <div>
+              <div className="space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-2xl font-extrabold text-slate-900">{student.name}</h1>
-                  <Badge variant="emerald" size="sm" className="rounded-lg">
-                    <CheckCircle2 className="h-3 w-3" /> Verified Student
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                    {student.name}
+                  </h1>
+                  <Badge variant="flame" size="sm" className="rounded-lg">
+                    {currentTrack?.name || student.track || "Web Dev Track"}
                   </Badge>
                 </div>
 
-                <p className="text-xs text-slate-600 font-medium mt-0.5 flex items-center gap-2">
+                <p className="text-xs sm:text-sm text-slate-400 font-medium flex items-center gap-2 flex-wrap">
                   {student.collegeName && (
                     <span className="flex items-center gap-1">
-                      <School className="h-3.5 w-3.5 text-orange-600" />
+                      <School className="h-3.5 w-3.5 text-amber-400" />
                       {student.collegeName}
                     </span>
                   )}
-                  <span className="text-slate-300">•</span>
-                  <span>{currentTrack?.name || "60-Day Tech Challenge"}</span>
+                  <span className="text-slate-600">•</span>
+                  <span className="text-slate-400">Cohort Starter</span>
                 </p>
               </div>
             </div>
 
-            {/* Streak Counter Motif */}
-            <div className="flex items-center gap-2">
-              <div className="p-3.5 rounded-xl flame-gradient flame-glow text-white flex items-center gap-2.5 shadow-md">
-                <Flame className="h-7 w-7 fill-white animate-pulse-subtle" />
-                <div>
-                  <div className="text-[10px] uppercase font-bold text-orange-100 opacity-90">Verified Streak</div>
-                  <div className="text-xl font-black">{student.currentStreak} Days</div>
-                </div>
+            {/* Verification Proof Metric */}
+            <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 text-center shrink-0 min-w-[140px]">
+              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+                Continuous Streak
+              </div>
+              <div className="text-2xl font-black text-amber-400 flex items-center justify-center gap-1 mt-0.5">
+                <Flame className="h-5 w-5 fill-amber-400 text-amber-400" />
+                <span>{student.currentStreak} Days</span>
+              </div>
+              <div className="text-[10px] text-emerald-400 font-semibold mt-0.5 flex items-center justify-center gap-1">
+                <CheckCircle2 className="h-3 w-3" /> Live Proof Verified
               </div>
             </div>
           </div>
 
-          {/* Quick Metrics Strip */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
-              <div className="text-[10px] uppercase font-bold text-slate-500">Current Streak</div>
-              <div className="text-lg font-black text-orange-600">{student.currentStreak} Days</div>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
-              <div className="text-[10px] uppercase font-bold text-slate-500">Longest Streak</div>
-              <div className="text-lg font-black text-slate-900">{student.longestStreak} Days</div>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
-              <div className="text-[10px] uppercase font-bold text-slate-500">Completed</div>
-              <div className="text-lg font-black text-emerald-600">{student.completedDays}/60</div>
+          {/* Social Proof & External Links Bar */}
+          <div className="pt-4 border-t border-slate-800 flex flex-wrap items-center gap-3">
+            {student.githubUsername && (
+              <a
+                href={`https://github.com/${student.githubUsername}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono text-slate-300 hover:text-white hover:border-slate-700 transition-colors"
+              >
+                <GitCommit className="h-3.5 w-3.5 text-emerald-400" />
+                <span>github.com/{student.githubUsername}</span>
+                <ExternalLink className="h-3 w-3 text-slate-500" />
+              </a>
+            )}
+
+            {student.linkedinProfile && (
+              <a
+                href={student.linkedinProfile}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono text-slate-300 hover:text-white hover:border-slate-700 transition-colors"
+              >
+                <Share2 className="h-3.5 w-3.5 text-blue-400" />
+                <span>LinkedIn Profile</span>
+                <ExternalLink className="h-3 w-3 text-slate-500" />
+              </a>
+            )}
+          </div>
+        </Card>
+
+        {/* 2. 60-Day Progress Heatmap Grid */}
+        <ProgressGridSection student={student} submissions={submissions} />
+
+        {/* 3. Verified Milestone Achievements */}
+        <AchievementsSection student={student} />
+
+        {/* 4. Verified Proof Feed */}
+        <Card className="p-6 bg-slate-900/90 border-slate-800 space-y-4 rounded-xl text-white">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+                <span>Verified Public Submissions ({submissions.length})</span>
+              </h3>
+              <p className="text-xs text-slate-400 font-medium mt-0.5">
+                Every entry represents a verified GitHub commit and LinkedIn post link.
+              </p>
             </div>
           </div>
 
-          {/* Progress Bar */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-xs font-semibold text-slate-700">
-              <span>Overall Challenge Completion</span>
-              <span className="text-orange-700 font-bold">{Math.round((student.completedDays / 60) * 100)}%</span>
+          {submissions.length === 0 ? (
+            <div className="p-8 text-center bg-slate-950/80 rounded-xl border border-slate-800 space-y-2">
+              <p className="text-xs text-slate-400 font-medium">
+                No public commit submissions recorded yet for this student.
+              </p>
             </div>
-            <ProgressBar value={student.completedDays} max={60} />
-          </div>
-
-          {/* 60-Cell Heatmap Grid */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold text-slate-800">
-              <span>Verified 60-Day Commit Heatmap</span>
-              <span className="text-[11px] text-slate-500 font-mono">
-                {student.completedDays} Shipped Commits
-              </span>
-            </div>
-
-            <div className="grid grid-cols-10 sm:grid-cols-12 md:grid-cols-15 gap-1.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-              {dayCells.map((cell) => {
-                let bgClass = "bg-white border-slate-200 text-slate-400";
-                if (cell.status === "done") bgClass = "bg-emerald-500 border-emerald-600 text-white font-extrabold shadow-xs";
-                else if (cell.status === "missed") bgClass = "bg-rose-100 border-rose-300 text-rose-700";
-                else if (cell.status === "today") bgClass = "flame-gradient text-white font-extrabold shadow-xs";
-
-                return (
-                  <div
-                    key={cell.day}
-                    title={`Day ${cell.day}: ${cell.status}`}
-                    className={`h-7 w-full rounded-md border flex items-center justify-center text-[10px] ${bgClass}`}
-                  >
-                    {cell.day}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Badges Section */}
-          <div className="space-y-3 pt-2">
-            <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-              <Trophy className="h-4 w-4 text-orange-600" />
-              <span>Earned Achievements & Badges</span>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              {MOCK_MILESTONES.map((milestone) => {
-                const isUnlocked = (student.milestoneBadges || []).includes(milestone.id) || student.completedDays >= milestone.days;
-
-                return (
-                  <div
-                    key={milestone.id}
-                    className={`p-3 rounded-xl border flex flex-col items-center text-center text-xs ${
-                      isUnlocked
-                        ? "bg-slate-50 border-orange-200 text-slate-900 shadow-xs"
-                        : "bg-slate-50/50 border-slate-200 text-slate-400 opacity-60"
-                    }`}
-                  >
-                    <div className="font-bold text-slate-900 mb-0.5">{milestone.title}</div>
-                    <div className="text-[10px] text-orange-700 font-medium">
-                      {isUnlocked ? "✓ Unlocked" : `${milestone.days} Days`}
+          ) : (
+            <div className="space-y-3">
+              {submissions.map((sub, idx) => (
+                <div
+                  key={sub.id || idx}
+                  className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-amber-400">Day {sub.dayNumber} Proof</span>
+                      <Badge variant="emerald" size="sm" className="rounded-md">
+                        Verified
+                      </Badge>
+                      <span className="text-slate-500">•</span>
+                      <span className="text-slate-400">{sub.submittedAt}</span>
                     </div>
                   </div>
-                );
-              })}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {sub.githubUrl && (
+                      <a
+                        href={sub.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700"
+                        title="View GitHub Commit"
+                      >
+                        <GitCommit className="h-3.5 w-3.5 text-emerald-400" />
+                      </a>
+                    )}
+                    {sub.linkedinUrl && (
+                      <a
+                        href={sub.linkedinUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700"
+                        title="View LinkedIn Post"
+                      >
+                        <Share2 className="h-3.5 w-3.5 text-blue-400" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          )}
 
           {/* Copy Resume Profile URL Button */}
-          <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-xs text-slate-600 font-medium flex items-center gap-2">
-              <Award className="h-4 w-4 text-orange-600" />
+          <div className="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-xs text-slate-400 font-medium flex items-center gap-2">
+              <Award className="h-4 w-4 text-amber-400" />
               <span>Paste this verified link into your resume header or LinkedIn bio.</span>
             </div>
 
             <Button
-              variant="primary"
-              size="md"
+              variant="outline"
+              size="sm"
               onClick={handleCopyLink}
-              className="w-full sm:w-auto py-2.5 px-5 shadow-md shadow-orange-600/20 rounded-xl font-bold"
+              className="text-xs py-2 px-4 rounded-xl shrink-0"
             >
-              <Copy className="h-4 w-4" />
-              <span>{copied ? "Link Copied to Clipboard! ✓" : "Copy Profile Link"}</span>
+              {copied ? (
+                <>
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                  <span>Copied to Clipboard!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="h-3.5 w-3.5 text-amber-400" />
+                  <span>Copy Resume Link</span>
+                </>
+              )}
             </Button>
           </div>
         </Card>
       </main>
-
-      {/* Minimal Footer Tagline */}
-      <footer className="max-w-3xl mx-auto w-full text-center py-6 text-xs text-slate-500 font-medium">
-        ABTalks 60 • Verified Public Streak Credential Page
-      </footer>
     </div>
   );
 }

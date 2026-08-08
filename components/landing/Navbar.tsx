@@ -19,19 +19,19 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/90 bg-white/95 backdrop-blur-xl shadow-xs">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-800/90 bg-[#090d16]/95 backdrop-blur-2xl">
       <div className="mx-auto flex h-14 sm:h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         {/* Left: Brand Logo & Desktop Nav Links */}
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2 group">
             <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl flame-gradient flame-glow text-white font-black text-base sm:text-lg transition-transform group-hover:scale-105">
-              <Flame className="h-4 w-4 sm:h-5 sm:w-5 fill-white text-orange-100" />
+              <Flame className="h-4 w-4 sm:h-5 sm:w-5 fill-white text-amber-200" />
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900">
+              <span className="font-extrabold text-base sm:text-lg tracking-tight text-white">
                 ABTalks
               </span>
-              <span className="text-orange-700 text-[10px] sm:text-xs px-1.5 py-0.5 rounded-md bg-orange-100/80 border border-orange-200 font-bold">
+              <span className="text-amber-400 text-[10px] sm:text-xs px-1.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/30 font-bold">
                 60
               </span>
             </div>
@@ -40,18 +40,18 @@ export function Navbar() {
           {/* Desktop Only Navigation Links */}
           <nav className="hidden md:flex items-center gap-1.5 ml-4">
             <Link href="/">
-              <Button variant="ghost" size="sm" className="text-xs font-bold text-slate-700 hover:text-slate-900">
+              <Button variant="ghost" size="sm" className="text-xs font-bold text-slate-300 hover:text-white">
                 <Home className="h-3.5 w-3.5 mr-1" />
                 <span>Home</span>
               </Button>
             </Link>
             <Link href="/dashboard">
-              <Button variant="ghost" size="sm" className="text-xs font-bold text-slate-700 hover:text-slate-900">
+              <Button variant="ghost" size="sm" className="text-xs font-bold text-slate-300 hover:text-white">
                 <span>Dashboard</span>
               </Button>
             </Link>
             <Link href="/profile">
-              <Button variant="ghost" size="sm" className="text-xs font-bold text-slate-700 hover:text-slate-900">
+              <Button variant="ghost" size="sm" className="text-xs font-bold text-slate-300 hover:text-white">
                 <span>Settings</span>
               </Button>
             </Link>
@@ -60,19 +60,19 @@ export function Navbar() {
 
         {/* Center: Desktop Challenge Badge */}
         <div className="hidden lg:flex items-center gap-2">
-          <Badge variant="flame" size="sm" className="rounded-lg px-3 py-1 bg-orange-50 border-orange-200">
-            <Flame className="h-3.5 w-3.5 fill-orange-600 text-orange-600" />
+          <Badge variant="flame" size="sm" className="rounded-lg px-3 py-1">
+            <Flame className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
             <span>60 Days Public Challenge</span>
           </Badge>
         </div>
 
-        {/* Right: Auth / Profile Button (Clean Mobile & Desktop Layout) */}
+        {/* Right: Auth / Profile Button */}
         <div className="flex items-center gap-2">
           {/* Mobile Only: Compact Account Button */}
           <div className="md:hidden flex items-center gap-2">
             {user && !isAnonymous ? (
               <Link href="/profile">
-                <div className="h-8 w-8 rounded-full bg-orange-100 border border-orange-300 text-orange-700 flex items-center justify-center font-bold text-xs shadow-xs">
+                <div className="h-8 w-8 rounded-full bg-slate-800 border border-amber-500/50 text-amber-400 flex items-center justify-center font-bold text-xs shadow-xs">
                   {user.displayName ? user.displayName[0].toUpperCase() : <User className="h-4 w-4" />}
                 </div>
               </Link>
@@ -81,9 +81,9 @@ export function Navbar() {
                 variant="google"
                 size="sm"
                 onClick={linkAnonymousToGoogle}
-                className="text-[11px] font-bold px-2.5 py-1 min-h-[34px] border-slate-300 text-slate-800 rounded-lg"
+                className="text-[11px] font-bold px-2.5 py-1 min-h-[34px] border-slate-700 text-slate-100 rounded-lg"
               >
-                <LogIn className="h-3 w-3 text-orange-600" />
+                <LogIn className="h-3 w-3 text-amber-400" />
                 <span>Claim</span>
               </Button>
             ) : (
@@ -91,9 +91,9 @@ export function Navbar() {
                 variant="google"
                 size="sm"
                 onClick={signInWithGoogle}
-                className="text-[11px] font-bold px-2.5 py-1 min-h-[34px] border-slate-300 text-slate-800 rounded-lg"
+                className="text-[11px] font-bold px-2.5 py-1 min-h-[34px] border-slate-700 text-slate-100 rounded-lg"
               >
-                <LogIn className="h-3 w-3 text-orange-600" />
+                <LogIn className="h-3 w-3 text-amber-400" />
                 <span>Sign In</span>
               </Button>
             )}
@@ -106,9 +106,9 @@ export function Navbar() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-xs font-bold px-3 py-1.5 border-slate-300 text-slate-800 rounded-xl"
+                  className="text-xs font-bold px-3 py-1.5 border-slate-700 text-slate-100 rounded-xl"
                 >
-                  <User className="h-3.5 w-3.5 text-orange-600" />
+                  <User className="h-3.5 w-3.5 text-amber-400" />
                   <span>{user.displayName?.split(" ")[0] || "Profile"}</span>
                 </Button>
               </Link>
@@ -117,15 +117,15 @@ export function Navbar() {
                 variant="google"
                 size="sm"
                 onClick={handleAuthAction}
-                className="text-xs font-bold px-3 py-1.5 border-slate-300 text-slate-800"
+                className="text-xs font-bold px-3 py-1.5 border-slate-700 text-slate-100"
               >
-                <LogIn className="h-3.5 w-3.5 text-orange-600" />
+                <LogIn className="h-3.5 w-3.5 text-amber-400" />
                 <span>{isAnonymous ? "Claim Google Account" : "Sign In with Google"}</span>
               </Button>
             )}
 
             <Link href="/dashboard">
-              <Button size="sm" variant="primary" className="shadow-orange-600/20">
+              <Button size="sm" variant="primary" className="shadow-amber-600/30">
                 <span>Start Streak</span>
                 <ArrowRight className="h-4 w-4 ml-0.5" />
               </Button>

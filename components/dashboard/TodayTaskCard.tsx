@@ -18,7 +18,6 @@ export function TodayTaskCard({ student }: TodayTaskCardProps) {
   const currentDayNum = Math.min(60, Math.max(1, student.completedDays + 1));
   const [task, setTask] = useState<ChallengeDay | null>(null);
 
-  // Fetch live Challenge Day brief from Firestore (Fix 3)
   useEffect(() => {
     let isMounted = true;
     async function fetchTodayTask() {
@@ -61,34 +60,34 @@ export function TodayTaskCard({ student }: TodayTaskCardProps) {
   };
 
   return (
-    <Card className="p-6 bg-white border border-slate-200 shadow-sm space-y-4 rounded-xl text-slate-900">
+    <Card className="p-6 bg-slate-900/90 border-slate-800 space-y-4 rounded-xl text-white">
       <div className="flex items-center justify-between gap-2">
         <Badge variant="flame" size="sm" className="rounded-lg">
           <Calendar className="h-3.5 w-3.5" />
           <span>Day {currentDayNum} Challenge</span>
         </Badge>
-        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-          <Clock className="h-3.5 w-3.5 text-orange-600" />
+        <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+          <Clock className="h-3.5 w-3.5 text-amber-400" />
           <span>Active Window Open</span>
         </div>
       </div>
 
       <div>
-        <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+        <h3 className="text-xl font-extrabold text-white tracking-tight">
           {activeTask.title}
         </h3>
-        <p className="text-xs text-slate-600 mt-1 line-clamp-2 font-normal leading-relaxed">
+        <p className="text-xs text-slate-300 mt-1 line-clamp-2 font-normal leading-relaxed">
           {activeTask.taskBrief}
         </p>
       </div>
 
-      <div className="pt-2 flex items-center justify-between border-t border-slate-100">
-        <span className="text-xs text-slate-500 font-medium">
-          Estimated Time: <strong className="text-slate-800 font-bold">45-60 mins</strong>
+      <div className="pt-2 flex items-center justify-between border-t border-slate-800">
+        <span className="text-xs text-slate-400 font-medium">
+          Estimated Time: <strong className="text-slate-200 font-bold">45-60 mins</strong>
         </span>
 
         <Link href={`/day/${currentDayNum}`}>
-          <Button size="sm" variant="primary" className="rounded-xl shadow-xs">
+          <Button size="sm" variant="primary" className="rounded-xl shadow-md">
             <span>View Task & Submit</span>
             <ArrowRight className="h-4 w-4" />
           </Button>
