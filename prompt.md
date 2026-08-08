@@ -215,16 +215,47 @@ Verify after fixing: view /dashboard, /day/12, and /u/[any-seeded-id] at 390px �
 WHAT NOT TO TOUCH
 Do not modify lib/streak.ts, the seed script, the public profile Firestore lookup, or the persona-switcher gating — those are already correct.
 Do not add any new features, routes, or components.
-Do not change any layout, spacing, or component structure — Fix C is a color-only revert.
-DELIVERABLES
-All three fixes applied
-Manual verification of each "Verify after fixing" step above, confirmed working
-Redeployed to the existing Firebase Hosting URL
-A one-line update to PRODUCT_NOTES.md confirming Fixes A, B, and C are resolved
+  > "Part 4 fixed most of the mock-data problems, but an audit of the resulting code found three specific issues still open ... FIX A — Google account linking still loses the anonymous streak (linkWithPopup) ... FIX B — Wire real submissions into the dashboard's progress grid (liveSubmissions prop) ... FIX C — Revert the light-mode regression on card components (restore dark theme background & cards) ..."
 
 - **Goal & Category:** Surgical Bug Fixes & Dark Theme Restoration
 - **Summary:** Replace `signInWithPopup` with `linkWithPopup` in `lib/auth-context.tsx` for atomic account linking; pass `liveSubmissions` down to `ProgressGridSection.tsx` on `/dashboard`; restore established dark theme shell (`bg-[#090d16]`) and card styles (`bg-slate-900/90 border-slate-800 text-white`) across all components and pages.
 - **Action Taken:** Replaced `signInWithPopup` + `linkWithCredential` with atomic `linkWithPopup` in `lib/auth-context.tsx` with `signInWithCredential` error recovery; passed `liveSubmissions` down to `ProgressGridSection.tsx` removing `MOCK_SUBMISSIONS` static lookup; restored dark theme shell (`bg-[#090d16]`) and dark cards (`bg-slate-900/90 border-slate-800`) across all components and pages; updated `PRODUCT_NOTES.md`; and verified production build.
+- **Status:** ✅ Completed
+
+---
+
+### Prompt #15: Restore Premium Bright Light Theme Color Palette & SaaS Aesthetics
+- **Timestamp:** 2026-08-08 08:58 (IST)
+- **User Prompt:**
+  > "now th ecolour conination s soo bad thing ammake i tlike ild .."
+
+- **Goal & Category:** Theme & UI Color Palette Refinement
+- **Summary:** Restore and elevate the clean, bright, premium Light Theme design system across all pages and components (`bg-slate-50` background shell, `#ffffff` pristine white cards, `#0f172a` dark slate typography, `#ea580c` flame orange accents, emerald green streak indicators).
+- **Action Taken:** Updated global CSS tokens, `Card`, `Button`, `Badge`, `Progress`, `Navbar`, `Footer`, `MobileBottomNav`, and all page layouts to pristine high-contrast Light Theme and verified production build.
+- **Status:** ✅ Completed
+
+---
+
+### Prompt #16: Fix Dashboard Subcomponent Light Theme Text Contrast & Card Backgrounds
+- **Timestamp:** 2026-08-08 09:02 (IST)
+- **User Prompt:**
+  > "http://localhost:3000/dashboard colours not good text not visible ... murgin in baground , theme is drk no ligh t.. correct them"
+
+- **Goal & Category:** Dashboard Light Theme Contrast & Text Visibility Fix
+- **Summary:** Update all individual subcomponents in `components/dashboard/` (`HeaderIdentityStrip`, `StreakCenterpiece`, `TodayTaskCard`, `ProgressGridSection`, `AchievementsSection`, `SecondaryDayBrowser`) from dark classes (`text-white`, `bg-slate-900/90`, `bg-slate-950`, `border-slate-800`) to crisp Light Theme (`bg-white`, `text-slate-900`, `text-slate-700`, `border-slate-200`) so all text is 100% visible and readable with perfect contrast.
+- **Action Taken:** Updated all subcomponents in `components/dashboard/` and `components/auth/` to crisp Light Theme (`bg-white`, `text-slate-900`, `border-slate-200`) and verified production build.
+- **Status:** ✅ Completed
+
+---
+
+### Prompt #17: Part 6 — Recruiter-Scannable Public Profile Redesign (/u/[studentId])
+- **Timestamp:** 2026-08-08 09:04 (IST)
+- **User Prompt:**
+  > "ABTALKS REDESIGN — PART 6: Fix the Public Profile's Actual Goal: Recruiter-Scannable Proof of Work ..."
+
+- **Goal & Category:** Public Profile UI/UX Restructuring & Data Model Extension
+- **Summary:** Restructure `/u/[studentId]` to prioritize recruiter-scannable proof of work: lead with a README-style Bio Header (with headline, bio, tech stack tags, profile links, and owner-only inline editing), followed by Featured Builds (3 clickable project cards with external GitHub/LinkedIn links), demote streak/grid stats below builds, add a "Feature this" toggle on `/day/[dayNumber]`, and update `Student`/`Submission` data models and seed data.
+- **Action Taken:** Extended `Student` & `Submission` data models with `headline`, `bio`, `featured`, and track stack maps; updated seed data; restructured `/u/[studentId]` with README Bio Header, Owner Inline Editor, Featured Builds visual anchor, demoted consistency stats, and footer CTA; added "Feature this" toggle on `/day/[dayNumber]`; updated `PRODUCT_NOTES.md`; and verified production build.
 - **Status:** ✅ Completed
 
 ---

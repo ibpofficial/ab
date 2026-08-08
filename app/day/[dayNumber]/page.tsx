@@ -177,6 +177,19 @@ export default function ChallengeDayPage() {
     }
   };
 
+  const handleToggleFeatured = async () => {
+    if (!user || !localSubmission) return;
+
+    try {
+      const newFeatured = !localSubmission.featured;
+      const subRef = doc(db, "submissions", localSubmission.id);
+      await updateDoc(subRef, { featured: newFeatured });
+      setLocalSubmission({ ...localSubmission, featured: newFeatured });
+    } catch (err) {
+      console.error("Error toggling featured status:", err);
+    }
+  };
+
   const studentCompletedDays = student?.completedDays || 0;
   const maxUnlockedDay = Math.min(60, Math.max(1, studentCompletedDays + 1));
   const isFutureLocked = dayNum > maxUnlockedDay;
@@ -190,11 +203,11 @@ export default function ChallengeDayPage() {
 
   if (authLoading || dataLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#090d16] text-[#f3f4f6]">
+      <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
         <Navbar />
         <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-12 flex flex-col items-center justify-center space-y-4">
-          <Loader2 className="h-8 w-8 text-amber-500 animate-spin" />
-          <p className="text-xs text-slate-400 font-mono">Loading Challenge Day {dayNum}...</p>
+          <Loader2 className="h-8 w-8 text-orange-600 animate-spin" />
+          <p className="text-xs text-slate-500 font-mono">Loading Challenge Day {dayNum}...</p>
         </main>
       </div>
     );
@@ -210,14 +223,14 @@ export default function ChallengeDayPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090d16] text-[#f3f4f6]">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
       <Navbar />
 
       <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* Navigation & Header */}
         <div className="flex items-center justify-between">
           <Link href="/dashboard">
-            <Button variant="ghost" size="sm" className="text-xs text-slate-300 hover:text-white">
+            <Button variant="ghost" size="sm" className="text-xs font-bold text-slate-700 hover:text-slate-900">
               <ArrowLeft className="h-4 w-4" />
               <span>Back to Dashboard</span>
             </Button>
@@ -231,7 +244,7 @@ export default function ChallengeDayPage() {
                 </Button>
               </Link>
             )}
-            <span className="text-xs font-mono font-bold text-slate-300 px-2">
+            <span className="text-xs font-mono font-bold text-slate-700 px-2">
               Day {dayNum} of 60
             </span>
             {dayNum < 60 && dayNum < maxUnlockedDay && (
@@ -245,7 +258,7 @@ export default function ChallengeDayPage() {
         </div>
 
         {/* 1. Day Context Header */}
-        <Card className="p-5 bg-slate-900/90 border-slate-800 space-y-3 rounded-xl shadow-xl text-white">
+        <Card className="p-5 bg-white border-slate-200 space-y-3 rounded-xl shadow-xs text-slate-900">
           <div className="flex items-center justify-between gap-2">
             <Badge variant="flame" size="md" className="rounded-lg">
               <Calendar className="h-3.5 w-3.5" />
@@ -254,7 +267,7 @@ export default function ChallengeDayPage() {
 
             {/* Status Indicator */}
             {isFutureLocked ? (
-              <Badge variant="outline" size="sm" className="text-slate-400 rounded-lg">
+              <Badge variant="outline" size="sm" className="text-slate-500 rounded-lg">
                 <Lock className="h-3 w-3" /> Locked Future Day
               </Badge>
             ) : isSubmitted ? (
@@ -263,7 +276,7 @@ export default function ChallengeDayPage() {
               </Badge>
             ) : isToday ? (
               <Badge variant="flame" size="sm" className="rounded-lg">
-                <Flame className="h-3 w-3 text-amber-400" /> Active Today
+                <Flame className="h-3 w-3 text-orange-600" /> Active Today
               </Badge>
             ) : (
               <Badge variant="rose" size="sm" className="rounded-lg">
@@ -272,31 +285,31 @@ export default function ChallengeDayPage() {
             )}
           </div>
 
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
             {activeChallenge.title}
           </h1>
 
-          <p className="text-xs text-slate-300 font-medium">
-            Track: <span className="text-amber-400 font-bold">Full-Stack Web Dev</span> • Part of your 60-day public commit streak.
+          <p className="text-xs text-slate-600 font-medium">
+            Track: <span className="text-orange-700 font-bold">Full-Stack Web Dev</span> • Part of your 60-day public commit streak.
           </p>
         </Card>
 
         {/* 2. Task Content */}
-        <Card className="p-6 bg-slate-900/90 border-slate-800 space-y-4 rounded-xl shadow-xl text-white">
+        <Card className="p-6 bg-white border-slate-200 space-y-4 rounded-xl shadow-xs text-slate-900">
           <div className="space-y-2">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <BookOpen className="h-4 w-4 text-amber-400" />
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <BookOpen className="h-4 w-4 text-orange-600" />
               <span>Task Requirements & Curriculum Brief</span>
             </h3>
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
+            <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
               {activeChallenge.taskBrief}
             </p>
           </div>
 
           {/* Resources List */}
           {activeChallenge.resources && activeChallenge.resources.length > 0 && (
-            <div className="pt-3 border-t border-slate-800 space-y-2">
-              <div className="text-xs font-bold text-slate-300">Curated Learning Resources:</div>
+            <div className="pt-3 border-t border-slate-100 space-y-2">
+              <div className="text-xs font-bold text-slate-700">Curated Learning Resources:</div>
               <div className="flex flex-wrap gap-2">
                 {activeChallenge.resources.map((res, i) => (
                   <a
@@ -304,7 +317,7 @@ export default function ChallengeDayPage() {
                     href={res.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-500/40 text-xs text-amber-400 font-bold flex items-center gap-1.5 transition-colors"
+                    className="px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 hover:border-orange-300 text-xs text-orange-700 font-bold flex items-center gap-1.5 transition-colors"
                   >
                     <span>{res.name}</span>
                     <ExternalLink className="h-3 w-3" />
@@ -318,60 +331,77 @@ export default function ChallengeDayPage() {
         {/* 3. Submission Form / Completed Summary / Locked State */}
         {isFutureLocked ? (
           /* Locked State Banner */
-          <Card className="p-8 bg-slate-900/90 border-dashed border-slate-800 text-center space-y-3 rounded-xl text-white">
-            <div className="h-12 w-12 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+          <Card className="p-8 bg-slate-50 border-dashed border-slate-200 text-center space-y-3 rounded-xl text-slate-900">
+            <div className="h-12 w-12 rounded-xl bg-slate-200 text-slate-500 flex items-center justify-center mx-auto">
               <Lock className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-bold text-white">Day {dayNum} is Currently Locked</h3>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
+            <h3 className="text-lg font-bold text-slate-900">Day {dayNum} is Currently Locked</h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto">
               Complete earlier days to unlock this challenge. Keep shipping daily to progress through your 60-day cohort!
             </p>
           </Card>
         ) : isSubmitted && !isEditing ? (
           /* Already Submitted Summary Card */
-          <Card className="p-6 bg-slate-900/90 border-emerald-500/30 space-y-4 rounded-xl text-white">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-emerald-400 font-extrabold text-base">
-                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+          <Card className="p-6 bg-emerald-50/80 border-emerald-200 space-y-4 rounded-xl text-slate-900">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-base">
+                <CheckCircle2 className="h-5 w-5 text-emerald-600" />
                 <span>Day {dayNum} Verified Submission</span>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsEditing(true)}
-                className="text-xs py-1 px-3 rounded-xl border-emerald-500/40 text-emerald-400 bg-slate-950"
-              >
-                <Edit2 className="h-3 w-3" />
-                <span>Edit Submission</span>
-              </Button>
+
+              <div className="flex items-center gap-2">
+                {/* Feature this toggle button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleToggleFeatured}
+                  className={`text-xs py-1 px-3 rounded-xl ${
+                    localSubmission?.featured
+                      ? "bg-amber-100 text-amber-800 border-amber-300 font-bold"
+                      : "bg-white text-slate-700 border-slate-300"
+                  }`}
+                >
+                  <span>{localSubmission?.featured ? "★ Featured on Profile" : "☆ Feature this"}</span>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsEditing(true)}
+                  className="text-xs py-1 px-3 rounded-xl border-emerald-300 text-emerald-800 bg-white"
+                >
+                  <Edit2 className="h-3 w-3" />
+                  <span>Edit</span>
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-2 text-xs">
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-slate-200 font-mono truncate">
-                  <GitCommit className="h-4 w-4 text-emerald-400 shrink-0" />
+              <div className="p-3 rounded-xl bg-white border border-emerald-200 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-slate-800 font-mono truncate">
+                  <GitCommit className="h-4 w-4 text-emerald-600 shrink-0" />
                   <span className="truncate">{localSubmission?.githubUrl}</span>
                 </div>
                 <a
                   href={localSubmission?.githubUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-amber-400 hover:underline shrink-0 text-[11px] font-bold ml-2"
+                  className="text-orange-700 hover:underline shrink-0 text-[11px] font-bold ml-2"
                 >
                   View Commit ↗
                 </a>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-slate-200 font-mono truncate">
-                  <Share2 className="h-4 w-4 text-blue-400 shrink-0" />
+              <div className="p-3 rounded-xl bg-white border border-emerald-200 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-slate-800 font-mono truncate">
+                  <Share2 className="h-4 w-4 text-blue-600 shrink-0" />
                   <span className="truncate">{localSubmission?.linkedinUrl}</span>
                 </div>
                 <a
                   href={localSubmission?.linkedinUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-amber-400 hover:underline shrink-0 text-[11px] font-bold ml-2"
+                  className="text-orange-700 hover:underline shrink-0 text-[11px] font-bold ml-2"
                 >
                   View Post ↗
                 </a>

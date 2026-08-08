@@ -2,61 +2,52 @@
 
 @layer base {
   :root {
-    --background: 9 13 22; /* #090d16 - deep midnight obsidian */
-    --surface: 15 23 42;   /* #0f172a - rich slate card surface */
-    --surface-hover: 30 41 59;
-    --primary: 255 107 0;  /* #ff6b00 - electric flame orange */
-    --emerald: 16 185 129; /* #10b981 - success streak */
-    --rose: 244 63 94;     /* #f43f5e - missed day warning */
-    --border: 30 41 59;    /* crisp slate border */
+    --background: 248 250 252; /* #f8fafc - crisp slate shell */
+    --surface: 255 255 255;    /* #ffffff - pristine white cards */
+    --surface-hover: 241 245 249;
+    --primary: 234 88 12;     /* #ea580c - vibrant flame orange */
+    --emerald: 16 185 129;    /* #10b981 - success streak */
+    --rose: 225 29 72;        /* #e11d48 - missed day warning */
+    --border: 226 232 240;    /* #e2e8f0 - clean slate border */
   }
 
   body {
-    background-color: #090d16;
-    color: #f8fafc;
+    background-color: #f8fafc;
+    color: #0f172a;
     font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading), var(--font-sans), sans-serif;
-    color: #ffffff;
+    color: #0f172a;
     letter-spacing: -0.025em;
   }
 }
 
-/* Dark Theme Flame & Card Utility Classes */
-.bg-midnight {
-  background-color: #090d16;
-}
-
-.bg-surface {
-  background-color: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
+/* Light Theme Flame & Card Utility Classes */
 .squarish-card {
   border-radius: 0.875rem; /* 14px crisp squarish with rounded corners */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(180deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
 .flame-gradient {
-  background: linear-gradient(135deg, #ff3d00 0%, #ff6b00 45%, #ffb700 100%);
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fbbf24 100%);
 }
 
 .flame-text {
-  background: linear-gradient(135deg, #ff4500 0%, #ff8800 50%, #ffd000 100%);
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #d97706 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .flame-glow {
-  box-shadow: 0 0 20px rgba(255, 107, 0, 0.4), 0 0 40px rgba(255, 107, 0, 0.15);
+  box-shadow: 0 4px 14px 0 rgba(234, 88, 12, 0.35);
 }
 
 .streak-card-glow {
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px -2px rgba(234, 88, 12, 0.15), 0 2px 6px -1px rgba(0, 0, 0, 0.06);
 }
 
 /* Animations */

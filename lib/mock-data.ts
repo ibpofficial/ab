@@ -3,6 +3,8 @@ export interface Student {
   name: string;
   avatarUrl?: string;
   track?: string;
+  headline?: string;
+  bio?: string;
   cohortStartDate: string;
   currentStreak: number;
   longestStreak: number;
@@ -43,7 +45,15 @@ export interface Submission {
   submittedAt: string;
   status: "on-time" | "late" | "missed";
   notes?: string;
+  featured?: boolean;
 }
+
+export const MOCK_TRACK_STACKS: Record<string, string[]> = {
+  "web-dev": ["Next.js 14", "TypeScript", "Tailwind CSS", "React", "Node.js", "Firebase"],
+  "dsa-cpp": ["C++", "Java", "Python", "Data Structures", "Algorithms", "Graph Theory"],
+  "ml-ai": ["Python", "PyTorch", "Scikit-Learn", "TensorFlow", "OpenCV", "LLMs"],
+  "mobile-dev": ["React Native", "Expo", "Flutter", "TypeScript", "Mobile UI", "Firebase"],
+};
 
 export const MOCK_MILESTONES = [
   { id: "7-day", title: "7-Day Pioneer", days: 7, icon: "Flame", description: "Maintained a 7-day continuous commit streak" },
@@ -58,6 +68,8 @@ export const MOCK_STUDENTS: Student[] = [
     name: "Aarav Sharma",
     avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
     track: "web-dev",
+    headline: undefined, // Empty headline -> tests track default fallback
+    bio: undefined,      // Empty bio -> tests graceful placeholder state
     cohortStartDate: "2026-08-08",
     currentStreak: 0,
     longestStreak: 0,
@@ -75,6 +87,8 @@ export const MOCK_STUDENTS: Student[] = [
     name: "Priya Patel",
     avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
     track: "web-dev",
+    headline: "Full-Stack Web Dev & Open Source Builder",
+    bio: "Building daily web applications, exploring Next.js App Router, TypeScript, and Firebase. Currently in final year at BITS Pilani.",
     cohortStartDate: "2026-07-16",
     currentStreak: 7,
     longestStreak: 15,
@@ -92,6 +106,8 @@ export const MOCK_STUDENTS: Student[] = [
     name: "Rohan Verma",
     avatarUrl: "", // Empty avatar edge case -> tests initials fallback ("RV")
     track: "",     // No track selected edge case -> tests "Choose a Track" prompt badge
+    headline: undefined,
+    bio: undefined,
     cohortStartDate: "2026-08-08",
     currentStreak: 0,
     longestStreak: 0,
@@ -169,9 +185,10 @@ export const MOCK_CHALLENGE_DAYS: ChallengeDay[] = Array.from({ length: 60 }, (_
     9: "Zustand & Global Store Optimization",
     10: "Form Validation with Zod & React Hook Form",
     16: "Mid-Sprint Architecture Polish",
+    22: "Zustand Global Store & LocalStorage Persistence",
+    23: "React Query Data Fetching & Cache Invalidation",
     24: "Firebase Firestore Seeding & Dynamic Routes",
   };
-
 
   return {
     dayNumber: day,
@@ -197,6 +214,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     linkedinUrl: `https://linkedin.com/posts/priyapatel-builds_abtalks60-day${i + 1}`,
     submittedAt: `2026-07-${16 + i}T22:30:00Z`,
     status: "on-time" as const,
+    featured: (i + 1) === 12, // Day 12 featured
   })),
   // Day 16: MISSED day (1 rest/missed day in history)
   {
@@ -208,6 +226,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     submittedAt: "",
     status: "missed" as const,
     notes: "Missed submission due to college mid-semester exams",
+    featured: false,
   },
   // Days 17 to 23: completed on time (rebuilt 7-day streak)
   ...Array.from({ length: 7 }, (_, i) => ({
@@ -218,5 +237,6 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     linkedinUrl: `https://linkedin.com/posts/priyapatel-builds_abtalks60-day${i + 17}`,
     submittedAt: `2026-08-0${i + 1}T23:15:00Z`,
     status: "on-time" as const,
+    featured: (i + 17) === 22 || (i + 17) === 23, // Days 22 and 23 featured
   })),
 ];

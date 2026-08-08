@@ -11,14 +11,14 @@ export function SecondaryDayBrowser() {
   const days = MOCK_CHALLENGE_DAYS.slice(0, 6);
 
   return (
-    <Card className="p-6 bg-slate-900/90 border-slate-800 space-y-4 rounded-xl text-white">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+    <Card className="p-6 bg-white border-slate-200 space-y-4 rounded-xl text-slate-900 shadow-sm">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div>
-          <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-            <Compass className="h-5 w-5 text-amber-400" />
+          <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
+            <Compass className="h-5 w-5 text-orange-600" />
             <span>Curriculum Day Browser</span>
           </h3>
-          <p className="text-xs text-slate-400 font-medium mt-0.5">
+          <p className="text-xs text-slate-500 font-medium mt-0.5">
             Preview upcoming daily project briefs across the 60-day roadmap.
           </p>
         </div>
@@ -34,18 +34,18 @@ export function SecondaryDayBrowser() {
       <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3">
         {days.map((day) => (
           <Link key={day.dayNumber} href={`/day/${day.dayNumber}`}>
-            <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-amber-500/40 transition-all group space-y-1.5 cursor-pointer">
+            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-orange-300 transition-all group space-y-1.5 cursor-pointer">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-mono font-bold text-amber-400">
+                <span className="text-[11px] font-mono font-bold text-orange-700">
                   Day {day.dayNumber}
                 </span>
-                <Code className="h-3.5 w-3.5 text-slate-400 group-hover:text-amber-400 transition-colors" />
+                <Code className="h-3.5 w-3.5 text-slate-400 group-hover:text-orange-600 transition-colors" />
               </div>
 
-              <h4 className="font-extrabold text-xs text-white group-hover:text-amber-300 transition-colors line-clamp-1">
+              <h4 className="font-extrabold text-xs text-slate-900 group-hover:text-orange-700 transition-colors line-clamp-1">
                 {day.title}
               </h4>
-              <p className="text-[11px] text-slate-400 line-clamp-2 font-normal">
+              <p className="text-[11px] text-slate-500 line-clamp-2 font-normal">
                 {day.description}
               </p>
             </div>

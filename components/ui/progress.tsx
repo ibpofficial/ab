@@ -20,7 +20,7 @@ export function ProgressBar({
   return (
     <div
       className={twMerge(
-        "w-full h-3 bg-slate-800/80 rounded-full overflow-hidden border border-slate-700/50 shadow-inner",
+        "w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200 shadow-inner",
         className
       )}
     >
