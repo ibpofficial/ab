@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Students collection: Public read for shareable profile pages, write restricted to owner
+    match /students/{studentId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == studentId;
+    }
+    
+    // Submissions collection: Public read for commit heatmaps, write restricted to authenticated student
+    match /submissions/{submissionId} {
+      allow read: if true;
+      allow create, update: if request.auth != null && request.resource.data.studentId == request.auth.uid;
+    }
+    
+    // Tracks collection: Read-only for all users
+    match /tracks/{trackId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Challenge Days collection: Read-only for all users
+    match /challengeDays/{dayNumber} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

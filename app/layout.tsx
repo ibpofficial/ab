@@ -1,0 +1,57 @@
+import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans, Inter } from "next/font/google";
+import { AuthProvider } from "@/lib/auth-context";
+import "./globals.css";
+
+const headingFont = Plus_Jakarta_Sans({
+  variable: "--font-heading",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+});
+
+const sansFont = Inter({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
+export const metadata: Metadata = {
+  title: "ABTalks — 60-Day Public Streak Challenge for Indian College Tech Talent",
+  description:
+    "Pick a track, build something daily, prove it with a GitHub commit and LinkedIn post. Build your verified public streak for recruiters.",
+  keywords: [
+    "ABTalks",
+    "60 day coding challenge",
+    "Indian college students",
+    "build in public",
+    "GitHub streak",
+    "web dev",
+    "DSA",
+  ],
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html
+      lang="en"
+      className={`${headingFont.variable} ${sansFont.variable} dark h-full antialiased selection:bg-amber-500/30 selection:text-amber-200`}
+    >
+      <body className="min-h-full flex flex-col bg-[#090d16] text-[#f3f4f6] font-sans antialiased overflow-x-hidden">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
+    </html>
+  );
+}
+
+
