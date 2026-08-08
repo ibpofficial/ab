@@ -128,8 +128,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const res = await signInWithPopup(auth, provider);
       setUser(res.user);
       await syncStudentDoc(res.user);
-    } catch (err) {
-      console.error("Error signing in with Google:", err);
+    } catch (err: any) {
+      if (
+        err?.code === "auth/popup-closed-by-user" ||
+        err?.code === "auth/cancelled-popup-request"
+      ) {
+        console.info("Google Sign-In popup closed before completion.");
+      } else {
+        console.warn("Google Sign-In notice:", err);
+      }
     } finally {
       setLoading(false);
     }
@@ -138,18 +145,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Link anonymous account to Google credentials (prevents losing streak)
   const linkAnonymousToGoogle = async () => {
     if (!auth.currentUser) return;
+    const anonymousUser = auth.currentUser;
 
     try {
       const provider = new GoogleAuthProvider();
       const res = await signInWithPopup(auth, provider);
-      if (res.user) {
+      const credential = GoogleAuthProvider.credentialFromResult(res);
+
+      if (anonymousUser.isAnonymous && credential) {
+        try {
+          const linkResult = await linkWithCredential(anonymousUser, credential);
+          setUser(linkResult.user);
+          await syncStudentDoc(linkResult.user);
+        } catch (linkErr: any) {
+          if (linkErr?.code === "auth/credential-already-in-use") {
+            console.info("This Google account already has a streak — signing you into it.");
+            setUser(res.user);
+            await syncStudentDoc(res.user);
+          } else {
+            throw linkErr;
+          }
+        }
+      } else {
         setUser(res.user);
         await syncStudentDoc(res.user);
       }
-    } catch (err) {
-      console.error("Account linking notice:", err);
-      // Fallback to direct sign-in if already linked
-      await signInWithGoogle();
+    } catch (err: any) {
+      if (
+        err?.code === "auth/popup-closed-by-user" ||
+        err?.code === "auth/cancelled-popup-request"
+      ) {
+        console.info("Account linking popup closed before completion.");
+      } else {
+        console.warn("Account linking notice:", err);
+      }
     }
   };
 

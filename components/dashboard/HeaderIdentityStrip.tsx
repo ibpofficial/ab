@@ -1,16 +1,19 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { Student, MOCK_TRACKS } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Compass, School, Share2 } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { CheckCircle2, Compass, School, Share2, LogIn } from "lucide-react";
 
 export interface HeaderIdentityStripProps {
   student: Student;
 }
 
 export function HeaderIdentityStrip({ student }: HeaderIdentityStripProps) {
-  // Get track object
+  const { isAnonymous, linkAnonymousToGoogle } = useAuth();
   const currentTrack = MOCK_TRACKS.find((t) => t.id === student.track);
 
   // Derive initials fallback for missing avatarUrl
@@ -22,13 +25,13 @@ export function HeaderIdentityStrip({ student }: HeaderIdentityStripProps) {
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+    <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-slate-900/90 border border-slate-800 shadow-md">
       {/* Identity Info */}
       <div className="flex items-center gap-3">
         {/* Avatar or Fallback Initials */}
         <div className="relative shrink-0">
           {student.avatarUrl ? (
-            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-amber-500/40 bg-slate-800">
+            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-amber-500/50 bg-slate-800">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={student.avatarUrl}
@@ -37,7 +40,7 @@ export function HeaderIdentityStrip({ student }: HeaderIdentityStripProps) {
               />
             </div>
           ) : (
-            <div className="h-12 w-12 rounded-full border-2 border-dashed border-amber-500/50 bg-amber-500/10 flex items-center justify-center font-extrabold text-amber-400 text-sm shadow-inner">
+            <div className="h-12 w-12 rounded-xl border-2 border-amber-500/60 bg-amber-500/10 flex items-center justify-center font-black text-amber-400 text-sm shadow-inner">
               {getInitials(student.name)}
             </div>
           )}
@@ -47,22 +50,22 @@ export function HeaderIdentityStrip({ student }: HeaderIdentityStripProps) {
         {/* Details */}
         <div className="space-y-0.5">
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="font-bold text-base text-white">{student.name}</h2>
+            <h2 className="font-extrabold text-base text-white">{student.name}</h2>
             {student.track ? (
-              <Badge variant="flame" size="sm">
+              <Badge variant="flame" size="sm" className="rounded-lg">
                 <CheckCircle2 className="h-3 w-3" /> {currentTrack?.name || student.track}
               </Badge>
             ) : (
-              <Badge variant="rose" size="sm" className="animate-pulse">
+              <Badge variant="rose" size="sm" className="rounded-lg animate-pulse">
                 <Compass className="h-3 w-3" /> Choose a Track
               </Badge>
             )}
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-xs text-slate-300">
             {student.collegeName && (
               <span className="flex items-center gap-1">
-                <School className="h-3.5 w-3.5 text-amber-500/80" />
+                <School className="h-3.5 w-3.5 text-amber-400" />
                 {student.collegeName}
               </span>
             )}
@@ -76,10 +79,22 @@ export function HeaderIdentityStrip({ student }: HeaderIdentityStripProps) {
         </div>
       </div>
 
-      {/* Quick Action: Share Public Profile */}
-      <div className="shrink-0 ml-auto sm:ml-0">
+      {/* Quick Action: Login with Google / Share Public Profile */}
+      <div className="flex items-center gap-2 shrink-0 ml-auto sm:ml-0">
+        {isAnonymous && (
+          <Button
+            variant="google"
+            size="sm"
+            onClick={linkAnonymousToGoogle}
+            className="text-xs py-1.5 px-3 border-amber-500/40"
+          >
+            <LogIn className="h-3.5 w-3.5 text-amber-400" />
+            <span>Claim Google Account</span>
+          </Button>
+        )}
+
         <Link href={`/u/${student.id}`}>
-          <Button variant="outline" size="sm" className="text-xs py-1.5 px-3">
+          <Button variant="outline" size="sm" className="text-xs py-1.5 px-3 rounded-xl">
             <Share2 className="h-3.5 w-3.5 text-amber-400" />
             <span>Public Profile</span>
           </Button>

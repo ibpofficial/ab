@@ -13,15 +13,21 @@ import { AchievementsSection } from "@/components/dashboard/AchievementsSection"
 import { SecondaryDayBrowser } from "@/components/dashboard/SecondaryDayBrowser";
 import { UpgradeAccountModal } from "@/components/auth/UpgradeAccountModal";
 import { useAuth } from "@/lib/auth-context";
-import { MOCK_STUDENTS, Student } from "@/lib/mock-data";
+import { db } from "@/lib/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { MOCK_STUDENTS, Student, Submission } from "@/lib/mock-data";
+import { Loader2 } from "lucide-react";
 
 function DashboardContent() {
   const searchParams = useSearchParams();
   const studentParam = searchParams.get("student");
-  const { student: authStudent, setOverrideStudentId } = useAuth();
+  const { user, student: authStudent, loading: authLoading, setOverrideStudentId } = useAuth();
 
   const [selectedStudentId, setSelectedStudentId] = useState<string>("student-2");
+  const [liveSubmissions, setLiveSubmissions] = useState<Submission[]>([]);
+  const [submissionsLoading, setSubmissionsLoading] = useState<boolean>(true);
 
+  // Dev QA persona override sync
   useEffect(() => {
     if (studentParam && MOCK_STUDENTS.some((s) => s.id === studentParam)) {
       setSelectedStudentId(studentParam);
@@ -34,16 +40,76 @@ function DashboardContent() {
     setOverrideStudentId(id);
   };
 
+  // Fetch live submissions from Firestore for active student
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchSubmissions() {
+      const activeUid = user?.uid || selectedStudentId;
+      setSubmissionsLoading(true);
+
+      try {
+        const q = query(
+          collection(db, "submissions"),
+          where("studentId", "==", activeUid)
+        );
+        const querySnap = await getDocs(q);
+        const fetched: Submission[] = [];
+        querySnap.forEach((doc) => fetched.push(doc.data() as Submission));
+
+        if (isMounted) {
+          setLiveSubmissions(fetched);
+        }
+      } catch (err) {
+        console.warn("Firestore submissions query notice:", err);
+      } finally {
+        if (isMounted) setSubmissionsLoading(false);
+      }
+    }
+
+    fetchSubmissions();
+    return () => {
+      isMounted = false;
+    };
+  }, [user, selectedStudentId]);
+
+  // Loading state (Fix 8)
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#090d16] text-[#f3f4f6]">
+        <Navbar />
+        <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-12 flex flex-col items-center justify-center space-y-4">
+          <Loader2 className="h-8 w-8 text-amber-500 animate-spin" />
+          <p className="text-xs text-slate-400 font-mono">Loading Student Dashboard...</p>
+        </main>
+      </div>
+    );
+  }
+
+  // Active student object (Fix 6: in dev, allow QA override; in production, use authStudent)
   const activeStudent: Student =
-    authStudent || MOCK_STUDENTS.find((s) => s.id === selectedStudentId) || MOCK_STUDENTS[1];
+    process.env.NODE_ENV !== "production"
+      ? authStudent || MOCK_STUDENTS.find((s) => s.id === selectedStudentId) || MOCK_STUDENTS[1]
+      : authStudent || {
+          id: user?.uid || "anon",
+          name: user?.displayName || "Student Builder",
+          avatarUrl: user?.photoURL || "",
+          track: "web-dev",
+          cohortStartDate: new Date().toISOString().split("T")[0],
+          currentStreak: 0,
+          longestStreak: 0,
+          completedDays: 0,
+          totalDays: 60,
+        };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#090d16] text-[#f3f4f6]">
-      {/* Dev QA Persona Switcher Bar */}
-      <PersonaSwitcher
-        currentStudentId={selectedStudentId}
-        onSelectStudent={handleSelectStudent}
-      />
+      {/* Dev-only QA Persona Switcher Bar (Fix 6) */}
+      {process.env.NODE_ENV !== "production" && (
+        <PersonaSwitcher
+          currentStudentId={selectedStudentId}
+          onSelectStudent={handleSelectStudent}
+        />
+      )}
 
       <Navbar />
 
@@ -73,10 +139,15 @@ function DashboardContent() {
   );
 }
 
-
 export default function DashboardPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#090d16] text-white p-8">Loading dashboard...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[#090d16] text-white p-8">
+          <Loader2 className="h-8 w-8 text-amber-500 animate-spin" />
+        </div>
+      }
+    >
       <DashboardContent />
     </Suspense>
   );

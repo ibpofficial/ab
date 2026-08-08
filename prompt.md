@@ -42,6 +42,48 @@ This document logs all user prompts, requirements, and instructions provided thr
 
 ---
 
+### Prompt #6: Design Refinement, Squarish Rounded Cards, Top Login Button & Premium Bright Aesthetics
+- **Timestamp:** 2026-08-08 08:07 (IST)
+- **User Prompt:**
+  > "refine the desing and rearrange the things also add the login buton on top and make the desing squarish and boxes squarish with round corners .. more premium bright desing .. and professioanl"
+
+- **Goal & Category:** UI/UX Design System Refinement
+- **Summary:** Refine overall platform design to be more premium, crisp, and professional: add top navbar Login/Google button, update cards/boxes to be squarish with rounded corners (`rounded-xl`), heighten contrast/brightness, and polish layouts.
+- **Action Taken:** Added top navbar "Sign In with Google" button, refined design tokens in `globals.css`, updated UI primitives (`Button`, `Card`, `Badge`) to crisp squarish rounded-xl boxes, polished HeroSection, TrustSection, HowItWorksSection, RecruiterPreviewSection, TracksSection, HeaderIdentityStrip, and verified production build.
+- **Status:** ✅ Completed
+
+---
+
+### Prompt #7: Firebase Auth Error Handling (auth/popup-closed-by-user)
+- **Timestamp:** 2026-08-08 08:18 (IST)
+- **User Prompt:**
+  > "Firebase: Error (auth/popup-closed-by-user)."
+
+- **Goal & Category:** Authentication Error Handling & Robustness
+- **Summary:** Catch `auth/popup-closed-by-user` and `auth/cancelled-popup-request` errors gracefully in Firebase Auth popup handlers (`lib/auth-context.tsx`) without breaking application state or showing raw unhandled exceptions.
+- **Action Taken:** Added explicit error checks in `signInWithGoogle` and `linkAnonymousToGoogle` to catch popup cancellation cleanly, prevent unhandled promise rejections, and verified production build.
+- **Status:** ✅ Completed
+
+---
+
+### Prompt #8: Phase 4 - Replace Mock Data with Live Firestore Everywhere (8 Data-Layer Fixes)
+- **Timestamp:** 2026-08-08 08:19 (IST)
+- **User Prompt:**
+  > "ABTALKS REDESIGN — PART 4: Wire It For Real: Replace Mock Data With Live Firestore Everywhere ... Fix 1: Real submission writes to Firestore ... Fix 2: Pure computeStreakStats helper in lib/streak.ts ... Fix 3: Dashboard, progress grid, day page read live Firestore collections ... Fix 4: Seed all 60 challenge days in seed-firestore.ts ... Fix 5: Public profile page reads live student doc with non-existent state ... Fix 6: Persona switcher hidden in production NODE_ENV check ... Fix 7: True linkWithCredential account linking ... Fix 8: Loading skeletons instead of fake data fallbacks ... Update PRODUCT_NOTES.md ..."
+
+- **Goal & Category:** Data Layer Refactoring & Live Firestore Integration
+- **Summary:** Wire all app screens (Dashboard, Day Page, Public Profile, Auth Context, Seed Script) to real Firestore collections (`students`, `submissions`, `challengeDays`), implement live streak calculation, true account linking, and production loading skeletons without changing visual UI.
+- **Action Taken:** Created `lib/streak.ts`, updated `scripts/seed-firestore.ts` to seed all 60 days, fixed `linkWithCredential` in `lib/auth-context.tsx`, updated `app/day/[dayNumber]/page.tsx`, `app/dashboard/page.tsx`, and `app/u/[studentId]/page.tsx` for live Firestore persistence and loading skeletons, gated `PersonaSwitcher` in production, updated `PRODUCT_NOTES.md`, and verified production build.
+- **Status:** ✅ Completed
+
+---
+
+
+
+
+
+
+
 
 
 

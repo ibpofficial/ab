@@ -18,11 +18,11 @@ export async function seedFirestore() {
       console.log(`✓ Seeded track: ${track.name} (${track.id})`);
     }
 
-    // 3. Seed Challenge Days (First 10 for quick seed)
-    for (const challengeDay of MOCK_CHALLENGE_DAYS.slice(0, 10)) {
+    // 3. Seed All 60 Challenge Days
+    for (const challengeDay of MOCK_CHALLENGE_DAYS) {
       await setDoc(doc(db, "challengeDays", challengeDay.dayNumber.toString()), challengeDay);
     }
-    console.log(`✓ Seeded ${MOCK_CHALLENGE_DAYS.length} Challenge Days`);
+    console.log(`✓ Seeded all ${MOCK_CHALLENGE_DAYS.length} Challenge Days`);
 
     // 4. Seed Submissions
     for (const submission of MOCK_SUBMISSIONS) {

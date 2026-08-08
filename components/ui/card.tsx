@@ -18,9 +18,9 @@ export function Card({
   return (
     <div
       className={twMerge(
-        "bg-[#111827]/80 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 shadow-xl transition-all duration-300",
-        hoverEffect && "hover:border-slate-700/80 hover:translate-y-[-2px] hover:shadow-2xl hover:shadow-black/50",
-        glowing && "border-amber-500/30 streak-card-glow",
+        "bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-xl p-5 sm:p-6 shadow-xl transition-all duration-200",
+        hoverEffect && "hover:border-slate-700 hover:shadow-2xl hover:shadow-black/60",
+        glowing && "border-amber-500/40 streak-card-glow",
         className
       )}
       {...props}

@@ -38,13 +38,13 @@ export function HowItWorksSection() {
     <section id="how-it-works" className="py-14 sm:py-20 relative">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <div className="text-xs font-bold uppercase tracking-wider text-amber-500 mb-2">
+          <div className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">
             The 60-Day Habit Engine
           </div>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
             How it works in <span className="flame-text">4 simple steps</span>
           </h2>
-          <p className="text-sm text-slate-400 mt-2">
+          <p className="text-xs sm:text-sm text-slate-300 mt-2 font-medium">
             Designed specifically for busy Indian engineering students. Takes 45-60 mins per night.
           </p>
         </div>
@@ -56,10 +56,10 @@ export function HowItWorksSection() {
             return (
               <Card
                 key={idx}
-                className="relative flex flex-col justify-between overflow-hidden border-slate-800/80 bg-slate-900/60 p-5 group hover:border-amber-500/40"
+                className="relative flex flex-col justify-between overflow-hidden border-slate-800 bg-slate-900/90 p-5 rounded-xl group hover:border-amber-500/40"
               >
                 {/* Number Watermark */}
-                <span className="absolute -top-3 -right-2 text-6xl font-black text-slate-800/40 select-none pointer-events-none group-hover:text-amber-500/10 transition-colors">
+                <span className="absolute -top-3 -right-2 text-6xl font-black text-slate-800/40 select-none pointer-events-none group-hover:text-amber-500/15 transition-colors">
                   {step.number}
                 </span>
 
@@ -70,7 +70,7 @@ export function HowItWorksSection() {
                   <div className="text-xs font-bold text-amber-400 mb-1">
                     {step.tag}
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2">
+                  <h3 className="text-lg font-extrabold text-white mb-2">
                     {step.title}
                   </h3>
                   <p className="text-xs text-slate-300 leading-relaxed">

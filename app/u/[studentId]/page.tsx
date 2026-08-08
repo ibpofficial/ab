@@ -1,27 +1,98 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { MOCK_STUDENTS, MOCK_SUBMISSIONS, MOCK_MILESTONES, MOCK_TRACKS } from "@/lib/mock-data";
+import { db } from "@/lib/firebase";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { Student, Submission, MOCK_MILESTONES, MOCK_TRACKS, MOCK_STUDENTS } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress";
 import { UpgradeAccountModal } from "@/components/auth/UpgradeAccountModal";
-import { useAuth } from "@/lib/auth-context";
-import { Flame, CheckCircle2, Copy, Share2, ShieldCheck, Trophy, ArrowLeft, School, GitCommit, Sparkles } from "lucide-react";
-
+import {
+  Flame,
+  CheckCircle2,
+  Copy,
+  Share2,
+  ShieldCheck,
+  Trophy,
+  ArrowLeft,
+  School,
+  GitCommit,
+  Sparkles,
+  Loader2,
+  UserX,
+} from "lucide-react";
 
 export default function PublicStreakProfilePage() {
   const params = useParams();
   const studentId = (params?.studentId as string) || "student-2";
 
-  const [copied, setCopied] = useState(false);
+  const [student, setStudent] = useState<Student | null>(null);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [notFound, setNotFound] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
 
-  const student =
-    MOCK_STUDENTS.find((s) => s.id === studentId) || MOCK_STUDENTS[1];
-  const currentTrack = MOCK_TRACKS.find((t) => t.id === student.track);
+  // Fetch Student document and Submissions from Firestore (Fix 5)
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchPublicProfile() {
+      setLoading(true);
+      setNotFound(false);
+
+      try {
+        // 1. Fetch Student doc from Firestore
+        const studentDocRef = doc(db, "students", studentId);
+        const studentSnap = await getDoc(studentDocRef);
+
+        if (studentSnap.exists() && isMounted) {
+          setStudent(studentSnap.data() as Student);
+        } else {
+          // Check mock students for seed personas fallback
+          const seeded = MOCK_STUDENTS.find((s) => s.id === studentId);
+          if (seeded && isMounted) {
+            setStudent(seeded);
+          } else if (isMounted) {
+            setNotFound(true); // FIX 5: Show "This profile doesn't exist" card!
+            setLoading(false);
+            return;
+          }
+        }
+
+        // 2. Fetch Submissions from Firestore for studentId
+        const q = query(
+          collection(db, "submissions"),
+          where("studentId", "==", studentId)
+        );
+        const querySnap = await getDocs(q);
+        const fetchedSubs: Submission[] = [];
+        querySnap.forEach((doc) => fetchedSubs.push(doc.data() as Submission));
+
+        if (isMounted) {
+          setSubmissions(fetchedSubs);
+        }
+      } catch (err) {
+        console.warn("Firestore public profile fetch notice:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    fetchPublicProfile();
+    return () => {
+      isMounted = false;
+    };
+  }, [studentId]);
+
+  const handleCopyLink = () => {
+    const url = typeof window !== "undefined" ? window.location.href : `https://abtalks.dev/u/${studentId}`;
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
 
   // Derive initials fallback
   const getInitials = (name: string) => {
@@ -31,13 +102,62 @@ export default function PublicStreakProfilePage() {
     return name.substring(0, 2).toUpperCase();
   };
 
+  // Loading state (Fix 8)
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#090d16] text-[#f3f4f6] flex flex-col items-center justify-center p-8 space-y-4">
+        <Loader2 className="h-8 w-8 text-amber-500 animate-spin" />
+        <p className="text-xs text-slate-400 font-mono">Loading Public Profile...</p>
+      </div>
+    );
+  }
+
+  // Not Found State (FIX 5: Never fall back to Priya!)
+  if (notFound || !student) {
+    return (
+      <div className="min-h-screen bg-[#090d16] text-[#f3f4f6] flex flex-col justify-between p-4 sm:p-8">
+        <div className="max-w-3xl mx-auto w-full pb-6">
+          <Link href="/dashboard">
+            <Button variant="ghost" size="sm" className="text-xs">
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back to Dashboard</span>
+            </Button>
+          </Link>
+        </div>
+
+        <main className="max-w-md mx-auto w-full text-center space-y-4">
+          <Card className="p-8 bg-slate-900/90 border-slate-800 space-y-4 rounded-xl text-center shadow-xl">
+            <div className="h-14 w-14 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto text-slate-400">
+              <UserX className="h-7 w-7 text-rose-400" />
+            </div>
+            <h1 className="text-xl font-extrabold text-white">This profile doesn&apos;t exist</h1>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              No student profile was found for ID <span className="font-mono text-amber-400">{studentId}</span>. The student may not have registered or claimed their public streak URL yet.
+            </p>
+            <div className="pt-2">
+              <Link href="/">
+                <Button variant="primary" size="md" className="rounded-xl">
+                  <span>Return to Home</span>
+                </Button>
+              </Link>
+            </div>
+          </Card>
+        </main>
+
+        <footer className="max-w-3xl mx-auto w-full text-center py-6 text-xs text-slate-500">
+          ABTalks 60 • Verified Public Streak Credential Page
+        </footer>
+      </div>
+    );
+  }
+
+  const currentTrack = MOCK_TRACKS.find((t) => t.id === student.track);
+
   // Build 60-day grid cells
   const currentDayNum = Math.min(60, Math.max(1, student.completedDays + 1));
   const dayCells = Array.from({ length: 60 }, (_, i) => {
     const day = i + 1;
-    const submission = MOCK_SUBMISSIONS.find(
-      (s) => s.studentId === student.id && s.dayNumber === day
-    );
+    const submission = submissions.find((s) => s.dayNumber === day);
 
     let status: "done" | "missed" | "today" | "upcoming" = "upcoming";
     if (submission?.status === "on-time") status = "done";
@@ -47,13 +167,6 @@ export default function PublicStreakProfilePage() {
 
     return { day, status };
   });
-
-  const handleCopyLink = () => {
-    const url = typeof window !== "undefined" ? window.location.href : `https://abtalks.dev/u/${student.id}`;
-    navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
 
   return (
     <div className="min-h-screen bg-[#090d16] text-[#f3f4f6] flex flex-col justify-between p-4 sm:p-8">
@@ -67,7 +180,7 @@ export default function PublicStreakProfilePage() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <Badge variant="emerald" size="sm">
+          <Badge variant="emerald" size="sm" className="rounded-lg">
             <ShieldCheck className="h-3.5 w-3.5" /> Verified Public Profile
           </Badge>
         </div>
@@ -78,7 +191,7 @@ export default function PublicStreakProfilePage() {
         <UpgradeAccountModal />
 
         {/* Profile Card Header */}
-        <Card className="p-6 bg-slate-900/90 border-amber-500/30 streak-card-glow relative overflow-hidden space-y-6">
+        <Card className="p-6 bg-slate-900/90 border-amber-500/40 streak-card-glow relative overflow-hidden space-y-6 rounded-xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
             <div className="flex items-center gap-4">
               {/* Avatar or Initials */}
@@ -92,7 +205,7 @@ export default function PublicStreakProfilePage() {
                   />
                 </div>
               ) : (
-                <div className="h-16 w-16 rounded-full border-2 border-amber-500/60 bg-amber-500/10 flex items-center justify-center font-black text-amber-400 text-xl shadow-lg">
+                <div className="h-16 w-16 rounded-xl border-2 border-amber-500/60 bg-amber-500/10 flex items-center justify-center font-black text-amber-400 text-xl shadow-lg">
                   {getInitials(student.name)}
                 </div>
               )}
@@ -100,12 +213,12 @@ export default function PublicStreakProfilePage() {
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <h1 className="text-2xl font-extrabold text-white">{student.name}</h1>
-                  <Badge variant="emerald" size="sm">
+                  <Badge variant="emerald" size="sm" className="rounded-lg">
                     <CheckCircle2 className="h-3 w-3" /> Verified Student
                   </Badge>
                 </div>
 
-                <p className="text-xs text-slate-300 mt-0.5 flex items-center gap-2">
+                <p className="text-xs text-slate-300 font-medium mt-0.5 flex items-center gap-2">
                   {student.collegeName && (
                     <span className="flex items-center gap-1">
                       <School className="h-3.5 w-3.5 text-amber-400" />
@@ -120,7 +233,7 @@ export default function PublicStreakProfilePage() {
 
             {/* Streak Counter Motif */}
             <div className="flex items-center gap-2">
-              <div className="p-3.5 rounded-2xl flame-gradient flame-glow text-white flex items-center gap-2.5 shadow-xl">
+              <div className="p-3.5 rounded-xl flame-gradient flame-glow text-white flex items-center gap-2.5 shadow-xl">
                 <Flame className="h-7 w-7 fill-white text-amber-200 animate-pulse-subtle" />
                 <div>
                   <div className="text-[10px] uppercase font-bold text-amber-100 opacity-90">Verified Streak</div>
@@ -205,7 +318,7 @@ export default function PublicStreakProfilePage() {
                     }`}
                   >
                     <div className="font-bold text-white mb-0.5">{milestone.title}</div>
-                    <div className="text-[10px] text-amber-400">
+                    <div className="text-[10px] text-amber-400 font-medium">
                       {isUnlocked ? "✓ Unlocked" : `${milestone.days} Days`}
                     </div>
                   </div>
@@ -216,7 +329,7 @@ export default function PublicStreakProfilePage() {
 
           {/* Copy Resume Profile URL Button */}
           <div className="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-xs text-slate-400 flex items-center gap-2">
+            <div className="text-xs text-slate-300 font-medium flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-amber-400" />
               <span>Paste this verified link into your resume header or LinkedIn bio.</span>
             </div>
@@ -225,7 +338,7 @@ export default function PublicStreakProfilePage() {
               variant="primary"
               size="md"
               onClick={handleCopyLink}
-              className="w-full sm:w-auto py-2.5 px-5 shadow-lg shadow-amber-600/30"
+              className="w-full sm:w-auto py-2.5 px-5 shadow-lg shadow-amber-600/30 rounded-xl font-bold"
             >
               <Copy className="h-4 w-4" />
               <span>{copied ? "Link Copied to Clipboard! ✓" : "Copy Profile Link"}</span>
