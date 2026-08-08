@@ -2,23 +2,24 @@
 
 import React from "react";
 import Link from "next/link";
-import { Student, MOCK_SUBMISSIONS } from "@/lib/mock-data";
+import { Student, Submission } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress";
 import { CheckCircle2, AlertCircle, Clock, Lock, ShieldCheck } from "lucide-react";
 
 export interface ProgressGridSectionProps {
   student: Student;
+  submissions?: Submission[];
 }
 
-export function ProgressGridSection({ student }: ProgressGridSectionProps) {
+export function ProgressGridSection({ student, submissions = [] }: ProgressGridSectionProps) {
   const currentDayNum = Math.min(60, Math.max(1, student.completedDays + 1));
 
-  // Build 60-day grid cells
+  // Build 60-day grid cells using passed-in live submissions
   const dayCells = Array.from({ length: 60 }, (_, i) => {
     const day = i + 1;
-    const submission = MOCK_SUBMISSIONS.find(
-      (s) => s.studentId === student.id && s.dayNumber === day
+    const submission = submissions.find(
+      (s) => s.dayNumber === day
     );
 
     let status: "done" | "missed" | "today" | "upcoming" = "upcoming";

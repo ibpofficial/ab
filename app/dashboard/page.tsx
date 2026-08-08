@@ -72,14 +72,14 @@ function DashboardContent() {
     };
   }, [user, selectedStudentId]);
 
-  // Loading state (Fix 8)
+  // Loading state
   if (authLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#090d16] text-[#f3f4f6]">
+      <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
         <Navbar />
-        <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-12 flex flex-col items-center justify-center space-y-4">
-          <Loader2 className="h-8 w-8 text-amber-500 animate-spin" />
-          <p className="text-xs text-slate-400 font-mono">Loading Student Dashboard...</p>
+        <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-12 flex flex-col items-center justify-center space-y-4">
+          <Loader2 className="h-8 w-8 text-orange-600 animate-spin" />
+          <p className="text-xs text-slate-500 font-mono">Loading Student Dashboard...</p>
         </main>
       </div>
     );
@@ -102,8 +102,8 @@ function DashboardContent() {
         };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090d16] text-[#f3f4f6]">
-      {/* Dev-only QA Persona Switcher Bar (Fix 6) */}
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
+      {/* Dev-only QA Persona Switcher Bar */}
       {process.env.NODE_ENV !== "production" && (
         <PersonaSwitcher
           currentStudentId={selectedStudentId}
@@ -113,26 +113,30 @@ function DashboardContent() {
 
       <Navbar />
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 space-y-5">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* Contextual Anonymous Account Upgrade Prompt */}
         <UpgradeAccountModal />
 
         {/* 1. Header Identity Strip */}
         <HeaderIdentityStrip student={activeStudent} />
 
-        {/* 2. Current Streak Centerpiece */}
-        <StreakCenterpiece student={activeStudent} />
+        {/* 2. Wider 2-Column Hero Grid: Streak Centerpiece + Today's Task */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          <div className="lg:col-span-7 flex flex-col">
+            <StreakCenterpiece student={activeStudent} />
+          </div>
+          <div className="lg:col-span-5 flex flex-col">
+            <TodayTaskCard student={activeStudent} />
+          </div>
+        </div>
 
-        {/* 3. Today's Task Card */}
-        <TodayTaskCard student={activeStudent} />
+        {/* 3. Progress & 60-Cell Contribution Grid */}
+        <ProgressGridSection student={activeStudent} submissions={liveSubmissions} />
 
-        {/* 4. Progress & 60-Cell Contribution Grid */}
-        <ProgressGridSection student={activeStudent} />
-
-        {/* 5. Standing & Achievements */}
+        {/* 4. Standing & Achievements */}
         <AchievementsSection student={activeStudent} />
 
-        {/* 6. Secondary Day Browser */}
+        {/* 5. Secondary Day Browser */}
         <SecondaryDayBrowser />
       </main>
     </div>
@@ -143,8 +147,8 @@ export default function DashboardPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-[#090d16] text-white p-8">
-          <Loader2 className="h-8 w-8 text-amber-500 animate-spin" />
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-900 p-8">
+          <Loader2 className="h-8 w-8 text-orange-600 animate-spin" />
         </div>
       }
     >

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { UserCheck, Sparkles } from "lucide-react";
+import { UserCheck, ShieldCheck } from "lucide-react";
 import { MOCK_STUDENTS } from "@/lib/mock-data";
 import { useAuth } from "@/lib/auth-context";
 
@@ -22,10 +22,10 @@ export function PersonaSwitcher({
   }
 
   return (
-    <div className="w-full bg-slate-900 border-b border-orange-200 px-3 py-2 text-xs text-white">
-      <div className="mx-auto max-w-5xl flex flex-col xs:flex-row items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 text-orange-400 font-semibold">
-          <Sparkles className="h-3.5 w-3.5 text-orange-400" />
+    <div className="w-full bg-slate-100 border-b border-orange-200 px-3 py-2 text-xs text-slate-800">
+      <div className="mx-auto max-w-6xl flex flex-col xs:flex-row items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 text-orange-700 font-semibold">
+          <ShieldCheck className="h-3.5 w-3.5 text-orange-600" />
           <span>Dev QA Persona Switcher:</span>
         </div>
 
@@ -44,8 +44,8 @@ export function PersonaSwitcher({
                 onClick={() => onSelectStudent(student.id)}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-all text-[11px] whitespace-nowrap flex items-center gap-1 ${
                   isActive
-                    ? "bg-orange-500 text-white font-extrabold shadow-xs"
-                    : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700"
+                    ? "bg-orange-600 text-white font-extrabold shadow-xs"
+                    : "bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 border border-slate-300"
                 }`}
               >
                 {isActive && <UserCheck className="h-3 w-3" />}

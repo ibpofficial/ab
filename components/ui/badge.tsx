@@ -19,11 +19,11 @@ export function Badge({
     "inline-flex items-center font-bold tracking-tight border shadow-xs transition-colors";
 
   const variants = {
-    flame: "bg-orange-50 text-orange-700 border-orange-200/90 rounded-lg",
-    emerald: "bg-emerald-50 text-emerald-700 border-emerald-200/90 rounded-lg",
-    rose: "bg-rose-50 text-rose-700 border-rose-200/90 rounded-lg",
-    outline: "bg-slate-100 text-slate-700 border-slate-300 rounded-lg",
-    neutral: "bg-slate-200 text-slate-800 border-slate-300 rounded-lg",
+    flame: "bg-amber-500/15 text-amber-400 border-amber-500/30 rounded-lg",
+    emerald: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30 rounded-lg",
+    rose: "bg-rose-500/15 text-rose-400 border-rose-500/30 rounded-lg",
+    outline: "bg-slate-900/80 text-slate-300 border-slate-700 rounded-lg",
+    neutral: "bg-slate-800 text-slate-200 border-slate-700 rounded-lg",
   };
 
   const sizes = {

@@ -21,7 +21,7 @@ import {
   ArrowLeft,
   School,
   GitCommit,
-  Sparkles,
+  Award,
   Loader2,
   UserX,
 } from "lucide-react";
@@ -326,7 +326,7 @@ export default function PublicStreakProfilePage() {
           {/* Copy Resume Profile URL Button */}
           <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="text-xs text-slate-600 font-medium flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-orange-600" />
+              <Award className="h-4 w-4 text-orange-600" />
               <span>Paste this verified link into your resume header or LinkedIn bio.</span>
             </div>
 

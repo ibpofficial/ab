@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { ShieldCheck, ExternalLink, Flame, CheckCircle2, GitCommit, Share2, Sparkles } from "lucide-react";
+import { ShieldCheck, ExternalLink, Flame, CheckCircle2, GitCommit, Share2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 

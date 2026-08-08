@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShieldCheck, LogIn, Sparkles, X, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, LogIn, X, CheckCircle2 } from "lucide-react";
 
 export function UpgradeAccountModal() {
   const { isAnonymous, linkAnonymousToGoogle } = useAuth();
@@ -42,7 +42,7 @@ export function UpgradeAccountModal() {
                 You are currently in a temporary guest session
               </h3>
               <Badge variant="flame" size="sm" className="rounded-md">
-                <Sparkles className="h-3 w-3" /> Save Streak
+                <ShieldCheck className="h-3 w-3" /> Save Streak
               </Badge>
             </div>
             <p className="text-xs text-slate-600 font-medium max-w-xl">

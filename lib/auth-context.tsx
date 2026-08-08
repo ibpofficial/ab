@@ -5,8 +5,9 @@ import {
   User,
   signInAnonymously as firebaseSignInAnonymously,
   signInWithPopup,
+  linkWithPopup,
+  signInWithCredential,
   GoogleAuthProvider,
-  linkWithCredential,
   onAuthStateChanged,
   signOut as firebaseSignOut,
 } from "firebase/auth";
@@ -142,40 +143,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Link anonymous account to Google credentials (prevents losing streak)
+  // Link anonymous account to Google credentials (FIX A: Atomic linkWithPopup)
   const linkAnonymousToGoogle = async () => {
     if (!auth.currentUser) return;
-    const anonymousUser = auth.currentUser;
 
     try {
       const provider = new GoogleAuthProvider();
-      const res = await signInWithPopup(auth, provider);
-      const credential = GoogleAuthProvider.credentialFromResult(res);
-
-      if (anonymousUser.isAnonymous && credential) {
-        try {
-          const linkResult = await linkWithCredential(anonymousUser, credential);
-          setUser(linkResult.user);
-          await syncStudentDoc(linkResult.user);
-        } catch (linkErr: any) {
-          if (linkErr?.code === "auth/credential-already-in-use") {
-            console.info("This Google account already has a streak — signing you into it.");
-            setUser(res.user);
-            await syncStudentDoc(res.user);
-          } else {
-            throw linkErr;
-          }
-        }
-      } else {
-        setUser(res.user);
-        await syncStudentDoc(res.user);
-      }
+      const result = await linkWithPopup(auth.currentUser, provider);
+      setUser(result.user);
+      await syncStudentDoc(result.user);
     } catch (err: any) {
-      if (
+      if (err?.code === "auth/credential-already-in-use") {
+        // This Google account is already linked to a different Firebase user.
+        // Sign into that existing account instead of losing the current session silently.
+        const credential = GoogleAuthProvider.credentialFromError(err);
+        if (credential) {
+          const signedIn = await signInWithCredential(auth, credential);
+          setUser(signedIn.user);
+          await syncStudentDoc(signedIn.user);
+        }
+      } else if (
         err?.code === "auth/popup-closed-by-user" ||
         err?.code === "auth/cancelled-popup-request"
       ) {
-        console.info("Account linking popup closed before completion.");
+        // User closed the popup — no-op, don't show an error.
       } else {
         console.warn("Account linking notice:", err);
       }

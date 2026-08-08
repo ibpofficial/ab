@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import { Flame, GitCommit, Share2, ShieldCheck, ArrowRight, Sparkles, LogIn, CheckCircle2, TrendingUp } from "lucide-react";
+import { Flame, GitCommit, Share2, ShieldCheck, ArrowRight, Award, LogIn, CheckCircle2, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -24,7 +24,7 @@ export function HeroSection() {
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6 text-center">
         {/* Top Tagline Badge */}
         <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-orange-700 shadow-xs">
-          <Sparkles className="h-3.5 w-3.5 text-orange-600 animate-pulse" />
+          <Award className="h-3.5 w-3.5 text-orange-600" />
           <span>Exclusive 60-Day Challenge for Indian College Tech Talent</span>
         </div>
 

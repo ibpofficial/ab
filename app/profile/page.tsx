@@ -24,9 +24,9 @@ import {
   Save,
   ArrowLeft,
   Loader2,
-  Sparkles,
   AlertCircle,
   Copy,
+  Award,
 } from "lucide-react";
 
 export default function StudentProfileSettingsPage() {
