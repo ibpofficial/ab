@@ -260,6 +260,34 @@ Do not add any new features, routes, or components.
 
 ---
 
+### Prompt #18: API Key Security, Firestore Security Rules & Read-Only Visitor Profile Views
+- **Timestamp:** 2026-08-08 09:21 (IST)
+- **User Prompt:**
+  > "secure .. all keys so o one can use them.. also wehn some on e opens public probie on any student .. sho he can view it not change it . like click on any day to see info ect"
+
+- **Goal & Category:** Security Hardening & Visitor Read-Only Permission Controls
+- **Summary:** Secure Firebase config using environment variables and `.gitignore`, create `firestore.rules` restricting document writes to authenticated owners, and ensure public profiles (`/u/[studentId]`) and day pages (`/day/[dayNumber]`) allow any visitor to view profiles and click day info read-only while strictly gating edit/submission controls to the profile owner (`user?.uid === studentId`).
+- **Action Taken:** Secured Firebase environment variables and `.gitignore`; created `firestore.rules` restricting writes to authenticated owners; gated inline intro editing on `/u/[studentId]` and submission editing/featuring on `/day/[dayNumber]` strictly to profile owners (`user?.uid === studentId`); and verified production build.
+- **Status:** ✅ Completed
+
+---
+
+### Prompt #19: Submission Safety Audit — Unlocking All Days & Instant First Paint
+- **Timestamp:** 2026-08-08 09:22 (IST)
+- **User Prompt:**
+  > "Submission-safety fix ... Fix 1: Remove future-day lock gate on /day/[dayNumber] so all days 1-60 are freely navigable and render task content & form. Fix 2: Render real content immediately on first paint on /dashboard and /day/[dayNumber], hydrating in background without spinner blocking ..."
+
+- **Goal & Category:** Submission Safety Audit & Non-Blocking First Paint Optimization
+- **Summary:** Remove future-day locking on `/day/[dayNumber]` so all 60 days render full task content and submission forms for cold visitors; eliminate full-page spinner gates (`if (authLoading) return <Spinner />`) on `/dashboard` and `/day/[dayNumber]`, initializing states synchronously with mock/default data for instant first paint and background Firestore hydration.
+- **Action Taken:** Removed future-day locking and locked card on `/day/[dayNumber]`, making all 60 days freely navigable; removed `if (authLoading) return <Spinner />` early returns on `/dashboard` and `/day/[dayNumber]`; initialized states synchronously with bundled mock data for 0ms initial paint with background Firestore hydration; updated `PRODUCT_NOTES.md`; and verified production build.
+- **Status:** ✅ Completed
+
+---
+
+
+
+
+
 
 
 

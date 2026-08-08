@@ -72,20 +72,7 @@ function DashboardContent() {
     };
   }, [user, selectedStudentId]);
 
-  // Loading state
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
-        <Navbar />
-        <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-12 flex flex-col items-center justify-center space-y-4">
-          <Loader2 className="h-8 w-8 text-orange-600 animate-spin" />
-          <p className="text-xs text-slate-500 font-mono">Loading Student Dashboard...</p>
-        </main>
-      </div>
-    );
-  }
-
-  // Active student object (Fix 6: in dev, allow QA override; in production, use authStudent)
+  // Active student object (instant default fallback for 0ms paint, hydration in background)
   const activeStudent: Student =
     process.env.NODE_ENV !== "production"
       ? authStudent || MOCK_STUDENTS.find((s) => s.id === selectedStudentId) || MOCK_STUDENTS[1]

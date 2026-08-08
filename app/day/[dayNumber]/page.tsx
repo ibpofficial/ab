@@ -43,9 +43,23 @@ export default function ChallengeDayPage() {
     }
   }, []);
 
-  const [challenge, setChallenge] = useState<ChallengeDay | null>(null);
+  // Synchronously initialize challenge from bundled mock data for 0ms initial paint
+  const getInitialChallenge = (num: number): ChallengeDay => {
+    return (
+      MOCK_CHALLENGE_DAYS.find((d) => d.dayNumber === num) || {
+        dayNumber: num,
+        title: `Day ${num}: Challenge Task Brief`,
+        description: "Daily challenge brief.",
+        taskBrief: "Implement daily challenge requirements, write clean code, push to GitHub, and post proof link on LinkedIn.",
+        resources: [{ name: "Next.js App Router Guide", url: "https://nextjs.org/docs" }],
+        trackId: "web-dev",
+      }
+    );
+  };
+
+  const [challenge, setChallenge] = useState<ChallengeDay>(getInitialChallenge(dayNum));
   const [localSubmission, setLocalSubmission] = useState<Submission | null>(null);
-  const [dataLoading, setDataLoading] = useState<boolean>(true);
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
 
   // Form input states
   const [githubUrl, setGithubUrl] = useState<string>("");
@@ -55,28 +69,24 @@ export default function ChallengeDayPage() {
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Fetch Challenge Day and Submission data from Firestore
+  // Synchronously update challenge state when dayNum prop changes
+  useEffect(() => {
+    setChallenge(getInitialChallenge(dayNum));
+  }, [dayNum]);
+
+  // Background fetch of Challenge Day and Submission data from Firestore
   useEffect(() => {
     let isMounted = true;
     async function fetchData() {
-      if (!user) {
-        setDataLoading(false);
-        return;
-      }
-      setDataLoading(true);
+      if (!user) return;
 
       try {
-        // 1. Fetch Challenge Day from Firestore
+        // 1. Fetch Challenge Day from Firestore if updated
         const dayDocRef = doc(db, "challengeDays", String(dayNum));
         const daySnap = await getDoc(dayDocRef);
 
         if (daySnap.exists() && isMounted) {
           setChallenge(daySnap.data() as ChallengeDay);
-        } else if (isMounted) {
-          const fallback =
-            MOCK_CHALLENGE_DAYS.find((d) => d.dayNumber === dayNum) ||
-            MOCK_CHALLENGE_DAYS[11];
-          setChallenge(fallback);
         }
 
         // 2. Fetch Submission from Firestore
@@ -92,15 +102,7 @@ export default function ChallengeDayPage() {
           setLocalSubmission(null);
         }
       } catch (err) {
-        console.warn("Firestore read notice:", err);
-        if (isMounted) {
-          const fallback =
-            MOCK_CHALLENGE_DAYS.find((d) => d.dayNumber === dayNum) ||
-            MOCK_CHALLENGE_DAYS[11];
-          setChallenge(fallback);
-        }
-      } finally {
-        if (isMounted) setDataLoading(false);
+        console.warn("Firestore read notice (using client fallback):", err);
       }
     }
 
@@ -192,7 +194,6 @@ export default function ChallengeDayPage() {
 
   const studentCompletedDays = student?.completedDays || 0;
   const maxUnlockedDay = Math.min(60, Math.max(1, studentCompletedDays + 1));
-  const isFutureLocked = dayNum > maxUnlockedDay;
   const isToday = dayNum === maxUnlockedDay;
   const isPast = dayNum < maxUnlockedDay;
   const isSubmitted = !!localSubmission && localSubmission.status !== "missed";
@@ -201,26 +202,7 @@ export default function ChallengeDayPage() {
   const githubWarning = githubUrl.length > 5 && !githubUrl.includes("github.com");
   const linkedinWarning = linkedinUrl.length > 5 && !linkedinUrl.includes("linkedin.com");
 
-  if (authLoading || dataLoading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
-        <Navbar />
-        <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-12 flex flex-col items-center justify-center space-y-4">
-          <Loader2 className="h-8 w-8 text-orange-600 animate-spin" />
-          <p className="text-xs text-slate-500 font-mono">Loading Challenge Day {dayNum}...</p>
-        </main>
-      </div>
-    );
-  }
-
-  const activeChallenge = challenge || {
-    dayNumber: dayNum,
-    title: `Day ${dayNum}: Challenge Task Brief`,
-    description: "Daily challenge brief.",
-    taskBrief: "Implement daily challenge requirements, write clean code, push to GitHub, and post proof link on LinkedIn.",
-    resources: [{ name: "Documentation", url: "https://nextjs.org" }],
-    trackId: "web-dev",
-  };
+  const activeChallenge = challenge;
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
@@ -247,7 +229,7 @@ export default function ChallengeDayPage() {
             <span className="text-xs font-mono font-bold text-slate-700 px-2">
               Day {dayNum} of 60
             </span>
-            {dayNum < 60 && dayNum < maxUnlockedDay && (
+            {dayNum < 60 && (
               <Link href={`/day/${dayNum + 1}`}>
                 <Button variant="outline" size="sm" className="h-8 w-8 p-0 rounded-xl">
                   <ChevronRight className="h-4 w-4" />
@@ -266,11 +248,7 @@ export default function ChallengeDayPage() {
             </Badge>
 
             {/* Status Indicator */}
-            {isFutureLocked ? (
-              <Badge variant="outline" size="sm" className="text-slate-500 rounded-lg">
-                <Lock className="h-3 w-3" /> Locked Future Day
-              </Badge>
-            ) : isSubmitted ? (
+            {isSubmitted ? (
               <Badge variant="emerald" size="sm" className="rounded-lg">
                 <CheckCircle2 className="h-3 w-3" /> Verified Submission ({localSubmission?.status})
               </Badge>
@@ -328,19 +306,8 @@ export default function ChallengeDayPage() {
           )}
         </Card>
 
-        {/* 3. Submission Form / Completed Summary / Locked State */}
-        {isFutureLocked ? (
-          /* Locked State Banner */
-          <Card className="p-8 bg-slate-50 border-dashed border-slate-200 text-center space-y-3 rounded-xl text-slate-900">
-            <div className="h-12 w-12 rounded-xl bg-slate-200 text-slate-500 flex items-center justify-center mx-auto">
-              <Lock className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-900">Day {dayNum} is Currently Locked</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
-              Complete earlier days to unlock this challenge. Keep shipping daily to progress through your 60-day cohort!
-            </p>
-          </Card>
-        ) : isSubmitted && !isEditing ? (
+        {/* 3. Submission Form / Completed Summary */}
+        {isSubmitted && !isEditing ? (
           /* Already Submitted Summary Card */
           <Card className="p-6 bg-emerald-50/80 border-emerald-200 space-y-4 rounded-xl text-slate-900">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -350,29 +317,34 @@ export default function ChallengeDayPage() {
               </div>
 
               <div className="flex items-center gap-2">
-                {/* Feature this toggle button */}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleToggleFeatured}
-                  className={`text-xs py-1 px-3 rounded-xl ${
-                    localSubmission?.featured
-                      ? "bg-amber-100 text-amber-800 border-amber-300 font-bold"
-                      : "bg-white text-slate-700 border-slate-300"
-                  }`}
-                >
-                  <span>{localSubmission?.featured ? "★ Featured on Profile" : "☆ Feature this"}</span>
-                </Button>
+                {/* Feature this toggle button (Owner Only) */}
+                {user && localSubmission && user.uid === localSubmission.studentId && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleToggleFeatured}
+                    className={`text-xs py-1 px-3 rounded-xl ${
+                      localSubmission?.featured
+                        ? "bg-amber-100 text-amber-800 border-amber-300 font-bold"
+                        : "bg-white text-slate-700 border-slate-300"
+                    }`}
+                  >
+                    <span>{localSubmission?.featured ? "★ Featured on Profile" : "☆ Feature this"}</span>
+                  </Button>
+                )}
 
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsEditing(true)}
-                  className="text-xs py-1 px-3 rounded-xl border-emerald-300 text-emerald-800 bg-white"
-                >
-                  <Edit2 className="h-3 w-3" />
-                  <span>Edit</span>
-                </Button>
+                {/* Edit Button (Owner Only) */}
+                {user && localSubmission && user.uid === localSubmission.studentId && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsEditing(true)}
+                    className="text-xs py-1 px-3 rounded-xl border-emerald-300 text-emerald-800 bg-white"
+                  >
+                    <Edit2 className="h-3 w-3" />
+                    <span>Edit</span>
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -410,26 +382,26 @@ export default function ChallengeDayPage() {
           </Card>
         ) : (
           /* Submission Form (Today or Missed Past Day) */
-          <Card className="p-6 bg-slate-900/90 border-slate-800 shadow-xl space-y-4 rounded-xl text-white">
+          <Card className="p-6 bg-white border-slate-200 shadow-xs space-y-4 rounded-xl text-slate-900">
             <div className="space-y-1">
-              <h3 className="text-lg font-extrabold text-white flex items-center gap-2">
-                <Flame className="h-5 w-5 text-amber-400" />
+              <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+                <Flame className="h-5 w-5 text-orange-600" />
                 <span>{isMissedPastDay ? "Late Submission Form" : "Submit Day " + dayNum + " Proof"}</span>
               </h3>
               {isMissedPastDay ? (
-                <p className="text-xs text-amber-300 font-medium">
+                <p className="text-xs text-orange-700 font-medium">
                   Submit your late proof below to update your verified streak record.
                 </p>
               ) : (
-                <p className="text-xs text-slate-300 font-normal">
+                <p className="text-xs text-slate-600 font-normal">
                   Paste your public GitHub commit SHA link and LinkedIn post link to verify today&apos;s streak.
                 </p>
               )}
             </div>
 
             {errorMsg && (
-              <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2 font-medium">
-                <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2 font-medium">
+                <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
                 <span>{errorMsg}</span>
               </div>
             )}
@@ -437,8 +409,8 @@ export default function ChallengeDayPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Field 1: GitHub URL */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                  <GitCommit className="h-4 w-4 text-emerald-400" />
+                <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <GitCommit className="h-4 w-4 text-emerald-600" />
                   <span>GitHub Repository / Commit URL *</span>
                 </label>
                 <input
@@ -447,7 +419,7 @@ export default function ChallengeDayPage() {
                   placeholder="https://github.com/username/repo/commit/sha"
                   value={githubUrl}
                   onChange={(e) => setGithubUrl(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder-slate-400 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-orange-500/40"
                 />
                 {githubWarning && (
                   <p className="text-[11px] text-amber-400 italic font-medium">
@@ -458,8 +430,8 @@ export default function ChallengeDayPage() {
 
               {/* Field 2: LinkedIn URL */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                  <Share2 className="h-4 w-4 text-blue-400" />
+                <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <Share2 className="h-4 w-4 text-blue-600" />
                   <span>LinkedIn Activity / Post URL *</span>
                 </label>
                 <input
@@ -468,10 +440,10 @@ export default function ChallengeDayPage() {
                   placeholder="https://linkedin.com/posts/yourname_abtalks60"
                   value={linkedinUrl}
                   onChange={(e) => setLinkedinUrl(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder-slate-400 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-orange-500/40"
                 />
                 {linkedinWarning && (
-                  <p className="text-[11px] text-amber-400 italic font-medium">
+                  <p className="text-[11px] text-orange-700 italic font-medium">
                     💡 Tip: URL should typically start with linkedin.com
                   </p>
                 )}
@@ -484,7 +456,7 @@ export default function ChallengeDayPage() {
                   size="md"
                   fullWidth
                   disabled={isSubmitting}
-                  className="py-3 text-sm font-extrabold shadow-lg shadow-amber-600/30 rounded-xl"
+                  className="py-3 text-sm font-extrabold shadow-md shadow-orange-600/20 rounded-xl"
                 >
                   {isSubmitting ? (
                     <>
@@ -505,15 +477,19 @@ export default function ChallengeDayPage() {
 
         {/* 4. Post-Submit Confirmation Modal / Card */}
         {showConfirmation && (
-          <Card className="p-6 bg-gradient-to-r from-amber-500/20 via-orange-600/10 to-slate-900 border border-amber-500/30 text-center space-y-4 shadow-xl rounded-xl text-white">
+          <Card className="p-6 bg-gradient-to-r from-orange-50 via-white to-amber-50 border border-orange-200 text-center space-y-4 shadow-sm rounded-xl text-slate-900">
             <div className="h-14 w-14 rounded-xl flame-gradient flex items-center justify-center mx-auto text-white shadow-md">
               <Flame className="h-8 w-8 fill-white" />
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-2xl font-black text-white">Day {dayNum} Verified</h3>
-              <p className="text-xs text-slate-300 font-medium">
-                Your commit proof has been saved to Firestore and your streak stats updated!
+              <h3 className="text-2xl font-black text-slate-900">Day {dayNum} Verified</h3>
+              <p className="text-xs text-slate-600 font-medium">
+                Your commit proof was recorded. Streak updated to{" "}
+                <strong className="text-slate-900">
+                  {studentCompletedDays + (localSubmission?.status === "on-time" ? 1 : 0)} Days
+                </strong>
+                !
               </p>
             </div>
 
