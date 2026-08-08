@@ -1,44 +1,68 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Sparkles, LogIn, ArrowRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ShieldCheck, LogIn, Sparkles, X, CheckCircle2 } from "lucide-react";
 
 export function UpgradeAccountModal() {
   const { isAnonymous, linkAnonymousToGoogle } = useAuth();
+  const [dismissed, setDismissed] = useState<boolean>(false);
+  const [isLinking, setIsLinking] = useState<boolean>(false);
 
-  if (!isAnonymous) return null;
+  if (!isAnonymous || dismissed) return null;
+
+  const handleLink = async () => {
+    setIsLinking(true);
+    await linkAnonymousToGoogle();
+    setIsLinking(false);
+  };
 
   return (
-    <Card className="p-4 bg-gradient-to-r from-amber-500/15 via-slate-900 to-slate-900 border border-amber-500/40 streak-card-glow my-4">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="flex items-center gap-3 text-center sm:text-left">
-          <div className="h-10 w-10 rounded-xl flame-gradient flex items-center justify-center text-white shrink-0">
-            <Sparkles className="h-5 w-5" />
+    <Card className="relative overflow-hidden p-5 bg-gradient-to-r from-orange-50 via-white to-amber-50 border border-orange-200 shadow-md rounded-xl text-slate-900">
+      <button
+        onClick={() => setDismissed(true)}
+        className="absolute top-3 right-3 text-slate-400 hover:text-slate-700 transition-colors p-1"
+        aria-label="Dismiss banner"
+      >
+        <X className="h-4 w-4" />
+      </button>
+
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="h-10 w-10 rounded-xl bg-orange-100 border border-orange-200 text-orange-700 flex items-center justify-center shrink-0">
+            <ShieldCheck className="h-5 w-5" />
           </div>
-          <div>
-            <div className="text-xs font-bold text-white flex items-center gap-1.5 justify-center sm:justify-start">
-              <span>Claim Your Public Streak Profile URL</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30">
-                Anonymous Mode
-              </span>
+
+          <div className="space-y-0.5">
+            <div className="flex items-center gap-2">
+              <h3 className="font-extrabold text-sm text-slate-900">
+                You are currently in a temporary guest session
+              </h3>
+              <Badge variant="flame" size="sm" className="rounded-md">
+                <Sparkles className="h-3 w-3" /> Save Streak
+              </Badge>
             </div>
-            <p className="text-[11px] text-slate-300 mt-0.5">
-              Sign in with Google to lock in your streak history and activate your shareable `/u/yourname` resume link.
+            <p className="text-xs text-slate-600 font-medium max-w-xl">
+              Link your Google Account to preserve your continuous 60-day commit history and claim your custom public profile link.
             </p>
           </div>
         </div>
 
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={linkAnonymousToGoogle}
-          className="shrink-0 w-full sm:w-auto text-xs py-2 px-4 shadow-md shadow-amber-600/30"
-        >
-          <LogIn className="h-3.5 w-3.5" />
-          <span>Sign in with Google</span>
-          <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
-        </Button>
+        <div className="flex items-center gap-2 shrink-0">
+          <Button
+            variant="google"
+            size="sm"
+            onClick={handleLink}
+            disabled={isLinking}
+            className="text-xs py-2 px-4 border-slate-300 shadow-xs"
+          >
+            <LogIn className="h-3.5 w-3.5 text-orange-600" />
+            <span>{isLinking ? "Linking..." : "Link Google Account"}</span>
+          </Button>
+        </div>
       </div>
     </Card>
   );

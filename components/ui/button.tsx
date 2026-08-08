@@ -18,19 +18,19 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center font-bold tracking-tight transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500/50 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]";
+    "inline-flex items-center justify-center font-bold tracking-tight transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/40 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]";
 
   const variants = {
     primary:
-      "flame-gradient text-white shadow-lg shadow-amber-600/30 hover:shadow-amber-500/50 hover:brightness-110 border border-amber-400/40 rounded-xl",
+      "bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white shadow-md shadow-orange-600/20 hover:shadow-lg border border-orange-500/30 rounded-xl",
     secondary:
-      "bg-slate-800/90 text-white border border-slate-700 hover:bg-slate-700 hover:border-slate-600 rounded-xl shadow-md",
+      "bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200 hover:border-slate-300 rounded-xl shadow-sm",
     outline:
-      "bg-slate-900/60 text-amber-400 border border-amber-500/40 hover:bg-amber-500/10 hover:border-amber-400 rounded-xl",
+      "bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-400 rounded-xl shadow-sm",
     ghost:
-      "bg-transparent text-slate-300 hover:text-white hover:bg-slate-800/60 rounded-lg",
+      "bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg",
     google:
-      "bg-slate-900 text-slate-100 border border-slate-700 hover:bg-slate-800 hover:border-slate-500 rounded-xl shadow-md",
+      "bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 hover:border-slate-400 rounded-xl shadow-sm",
   };
 
   const sizes = {

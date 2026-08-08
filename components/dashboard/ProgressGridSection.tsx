@@ -1,9 +1,11 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { Student, MOCK_SUBMISSIONS } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress";
-import { CheckCircle2, XCircle, Flame, Calendar, Info } from "lucide-react";
+import { CheckCircle2, AlertCircle, Clock, Lock, ShieldCheck } from "lucide-react";
 
 export interface ProgressGridSectionProps {
   student: Student;
@@ -12,7 +14,7 @@ export interface ProgressGridSectionProps {
 export function ProgressGridSection({ student }: ProgressGridSectionProps) {
   const currentDayNum = Math.min(60, Math.max(1, student.completedDays + 1));
 
-  // Build 60-day grid status array
+  // Build 60-day grid cells
   const dayCells = Array.from({ length: 60 }, (_, i) => {
     const day = i + 1;
     const submission = MOCK_SUBMISSIONS.find(
@@ -20,8 +22,7 @@ export function ProgressGridSection({ student }: ProgressGridSectionProps) {
     );
 
     let status: "done" | "missed" | "today" | "upcoming" = "upcoming";
-
-    if (submission?.status === "on-time") {
+    if (submission?.status === "on-time" || day <= student.completedDays) {
       status = "done";
     } else if (submission?.status === "missed") {
       status = "missed";
@@ -34,92 +35,75 @@ export function ProgressGridSection({ student }: ProgressGridSectionProps) {
     return { day, status };
   });
 
-  const doneCount = dayCells.filter((c) => c.status === "done").length;
-  const missedCount = dayCells.filter((c) => c.status === "missed").length;
-
   return (
-    <Card className="p-5 sm:p-6 bg-slate-900/80 border-slate-800 space-y-5">
-      {/* Progress Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+    <Card className="p-6 bg-white border border-slate-200 shadow-sm space-y-5 rounded-xl text-slate-900">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
         <div>
-          <h3 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <span>60-Day Streak Progress</span>
-            <span className="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-              {student.completedDays}/60 Days
-            </span>
+          <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-orange-600" />
+            <span>60-Day Public Commit Heatmap</span>
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
-            {student.completedDays === 0
-              ? "Your 60-day habit journey starts with Day 1!"
-              : student.completedDays < 10
-              ? "Healthy early momentum! Consistency beats intensity."
-              : "Solid continuous progress toward your recruiter proof."}
+          <p className="text-xs text-slate-500 font-medium mt-0.5">
+            Each cell represents a daily commit proof. Green = Shipped, Orange = Active Today, Gray = Upcoming.
           </p>
         </div>
 
-        {/* Legend */}
-        <div className="flex items-center gap-3 text-[11px] text-slate-400">
-          <div className="flex items-center gap-1">
-            <span className="h-2.5 w-2.5 rounded-sm bg-emerald-500 inline-block" />
-            <span>Completed</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="h-2.5 w-2.5 rounded-sm bg-rose-500 inline-block" />
-            <span>Missed</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="h-2.5 w-2.5 rounded-sm flame-gradient inline-block animate-pulse" />
-            <span>Today</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="h-2.5 w-2.5 rounded-sm bg-slate-800 border border-slate-700 inline-block" />
-            <span>Upcoming</span>
-          </div>
+        <div className="text-right shrink-0">
+          <span className="text-xs font-bold text-slate-700">
+            {student.completedDays}/60 Days
+          </span>
+          <span className="text-[11px] text-slate-500 font-medium ml-1.5">
+            ({Math.round((student.completedDays / 60) * 100)}%)
+          </span>
         </div>
       </div>
 
       {/* Progress Bar */}
       <ProgressBar value={student.completedDays} max={60} />
 
-      {/* 60-Cell Contribution Grid */}
-      <div>
-        <div className="text-xs font-semibold text-slate-300 mb-2 flex items-center justify-between">
-          <span>60-Day Commit Grid</span>
-          <span className="text-[11px] text-slate-400 font-mono">
-            {doneCount} Done • {missedCount} Rest/Missed • {60 - doneCount - missedCount} Remaining
-          </span>
+      {/* Legend */}
+      <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600">
+        <div className="flex items-center gap-1.5">
+          <div className="h-3.5 w-3.5 rounded-sm bg-emerald-500 border border-emerald-600" />
+          <span>Shipped ({student.completedDays})</span>
         </div>
+        <div className="flex items-center gap-1.5">
+          <div className="h-3.5 w-3.5 rounded-sm flame-gradient" />
+          <span>Today (Day {currentDayNum})</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="h-3.5 w-3.5 rounded-sm bg-rose-100 border border-rose-300" />
+          <span>Missed</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="h-3.5 w-3.5 rounded-sm bg-slate-100 border border-slate-200" />
+          <span>Upcoming</span>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-10 sm:grid-cols-12 md:grid-cols-15 gap-1.5 p-3 rounded-xl bg-slate-950/70 border border-slate-800">
-          {dayCells.map((cell) => {
-            let bgClass = "bg-slate-800/80 border-slate-700/50 text-slate-500";
-            let statusText = "Upcoming";
+      {/* 60-Cell Grid */}
+      <div className="grid grid-cols-6 xs:grid-cols-10 sm:grid-cols-12 md:grid-cols-15 gap-1.5 pt-2">
+        {dayCells.map((cell) => {
+          let bgClass = "bg-slate-100 border-slate-200 text-slate-400 hover:border-slate-300";
+          if (cell.status === "done") {
+            bgClass = "bg-emerald-500 border-emerald-600 text-white font-extrabold shadow-xs";
+          } else if (cell.status === "missed") {
+            bgClass = "bg-rose-100 border-rose-300 text-rose-700 font-bold";
+          } else if (cell.status === "today") {
+            bgClass = "flame-gradient border-orange-600 text-white font-extrabold shadow-sm animate-pulse-subtle";
+          }
 
-            if (cell.status === "done") {
-              bgClass =
-                "bg-emerald-500/80 border-emerald-400/50 text-emerald-950 font-extrabold shadow-sm shadow-emerald-500/20";
-              statusText = "Completed";
-            } else if (cell.status === "missed") {
-              bgClass = "bg-rose-500/30 border-rose-500/40 text-rose-300";
-              statusText = "Missed / Rest";
-            } else if (cell.status === "today") {
-              bgClass =
-                "flame-gradient border-amber-400 text-white font-extrabold shadow-md shadow-amber-500/40 animate-pulse-subtle";
-              statusText = "Today's Task";
-            }
-
-            return (
-              <Link
-                key={cell.day}
-                href={`/day/${cell.day}`}
-                title={`Day ${cell.day}: ${statusText}`}
-                className={`h-7 w-full rounded-md border flex items-center justify-center text-[10px] transition-all hover:scale-110 hover:z-10 focus:outline-none focus:ring-2 focus:ring-amber-500/50 ${bgClass}`}
+          return (
+            <Link key={cell.day} href={`/day/${cell.day}`}>
+              <div
+                className={`h-9 w-full rounded-lg border flex flex-col items-center justify-center transition-transform hover:scale-105 cursor-pointer ${bgClass}`}
+                title={`Day ${cell.day}: ${cell.status}`}
               >
-                {cell.day}
-              </Link>
-            );
-          })}
-        </div>
+                <span className="text-[11px] leading-none">{cell.day}</span>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </Card>
   );

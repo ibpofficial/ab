@@ -30,7 +30,7 @@ export function TrustSection() {
   ];
 
   return (
-    <section className="py-10 border-y border-slate-800/90 bg-slate-950/70">
+    <section className="py-10 border-y border-slate-200 bg-white">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map((stat, index) => {
@@ -38,18 +38,18 @@ export function TrustSection() {
             return (
               <div
                 key={index}
-                className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-center hover:border-amber-500/40 transition-colors shadow-md"
+                className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center hover:border-orange-300 transition-colors shadow-xs"
               >
-                <div className="inline-flex items-center justify-center h-10 w-10 rounded-xl bg-amber-500/10 text-amber-400 mb-2 border border-amber-500/20">
+                <div className="inline-flex items-center justify-center h-10 w-10 rounded-xl bg-orange-100/80 text-orange-700 mb-2 border border-orange-200">
                   <Icon className="h-5 w-5" />
                 </div>
-                <div className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                   {stat.value}
                 </div>
-                <div className="text-xs font-bold text-slate-200 mt-0.5">
+                <div className="text-xs font-bold text-slate-700 mt-0.5">
                   {stat.label}
                 </div>
-                <div className="text-[11px] text-slate-400 mt-1">
+                <div className="text-[11px] text-slate-500 mt-1 font-medium">
                   {stat.subtext}
                 </div>
               </div>

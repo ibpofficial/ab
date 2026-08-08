@@ -36,7 +36,7 @@ export default function PublicStreakProfilePage() {
   const [notFound, setNotFound] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
 
-  // Fetch Student document and Submissions from Firestore (Fix 5)
+  // Fetch Student document and Submissions from Firestore
   useEffect(() => {
     let isMounted = true;
     async function fetchPublicProfile() {
@@ -56,7 +56,7 @@ export default function PublicStreakProfilePage() {
           if (seeded && isMounted) {
             setStudent(seeded);
           } else if (isMounted) {
-            setNotFound(true); // FIX 5: Show "This profile doesn't exist" card!
+            setNotFound(true);
             setLoading(false);
             return;
           }
@@ -94,7 +94,6 @@ export default function PublicStreakProfilePage() {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  // Derive initials fallback
   const getInitials = (name: string) => {
     if (!name) return "ST";
     const parts = name.trim().split(" ");
@@ -102,20 +101,18 @@ export default function PublicStreakProfilePage() {
     return name.substring(0, 2).toUpperCase();
   };
 
-  // Loading state (Fix 8)
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#090d16] text-[#f3f4f6] flex flex-col items-center justify-center p-8 space-y-4">
-        <Loader2 className="h-8 w-8 text-amber-500 animate-spin" />
-        <p className="text-xs text-slate-400 font-mono">Loading Public Profile...</p>
+      <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col items-center justify-center p-8 space-y-4">
+        <Loader2 className="h-8 w-8 text-orange-600 animate-spin" />
+        <p className="text-xs text-slate-500 font-mono">Loading Public Profile...</p>
       </div>
     );
   }
 
-  // Not Found State (FIX 5: Never fall back to Priya!)
   if (notFound || !student) {
     return (
-      <div className="min-h-screen bg-[#090d16] text-[#f3f4f6] flex flex-col justify-between p-4 sm:p-8">
+      <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between p-4 sm:p-8">
         <div className="max-w-3xl mx-auto w-full pb-6">
           <Link href="/dashboard">
             <Button variant="ghost" size="sm" className="text-xs">
@@ -126,13 +123,13 @@ export default function PublicStreakProfilePage() {
         </div>
 
         <main className="max-w-md mx-auto w-full text-center space-y-4">
-          <Card className="p-8 bg-slate-900/90 border-slate-800 space-y-4 rounded-xl text-center shadow-xl">
-            <div className="h-14 w-14 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto text-slate-400">
-              <UserX className="h-7 w-7 text-rose-400" />
+          <Card className="p-8 bg-white border-slate-200 space-y-4 rounded-xl text-center shadow-md">
+            <div className="h-14 w-14 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-slate-500">
+              <UserX className="h-7 w-7 text-rose-600" />
             </div>
-            <h1 className="text-xl font-extrabold text-white">This profile doesn&apos;t exist</h1>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              No student profile was found for ID <span className="font-mono text-amber-400">{studentId}</span>. The student may not have registered or claimed their public streak URL yet.
+            <h1 className="text-xl font-extrabold text-slate-900">This profile doesn&apos;t exist</h1>
+            <p className="text-xs text-slate-600 leading-relaxed font-normal">
+              No student profile was found for ID <span className="font-mono text-orange-700 font-bold">{studentId}</span>. The student may not have registered or claimed their public streak URL yet.
             </p>
             <div className="pt-2">
               <Link href="/">
@@ -169,8 +166,8 @@ export default function PublicStreakProfilePage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-[#f3f4f6] flex flex-col justify-between p-4 sm:p-8">
-      {/* Minimal Header / Back link */}
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between p-4 sm:p-8">
+      {/* Header link */}
       <div className="max-w-3xl mx-auto w-full flex items-center justify-between pb-6">
         <Link href="/dashboard">
           <Button variant="ghost" size="sm" className="text-xs">
@@ -191,12 +188,11 @@ export default function PublicStreakProfilePage() {
         <UpgradeAccountModal />
 
         {/* Profile Card Header */}
-        <Card className="p-6 bg-slate-900/90 border-amber-500/40 streak-card-glow relative overflow-hidden space-y-6 rounded-xl">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <Card className="p-6 bg-white border-slate-200 shadow-md relative overflow-hidden space-y-6 rounded-xl text-slate-900">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
             <div className="flex items-center gap-4">
-              {/* Avatar or Initials */}
               {student.avatarUrl ? (
-                <div className="h-16 w-16 rounded-full overflow-hidden border-2 border-amber-500/60 bg-slate-800 shadow-lg">
+                <div className="h-16 w-16 rounded-full overflow-hidden border-2 border-orange-500/60 bg-slate-100 shadow-sm">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={student.avatarUrl}
@@ -205,27 +201,27 @@ export default function PublicStreakProfilePage() {
                   />
                 </div>
               ) : (
-                <div className="h-16 w-16 rounded-xl border-2 border-amber-500/60 bg-amber-500/10 flex items-center justify-center font-black text-amber-400 text-xl shadow-lg">
+                <div className="h-16 w-16 rounded-xl border-2 border-orange-400/60 bg-orange-50 flex items-center justify-center font-black text-orange-700 text-xl shadow-sm">
                   {getInitials(student.name)}
                 </div>
               )}
 
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-2xl font-extrabold text-white">{student.name}</h1>
+                  <h1 className="text-2xl font-extrabold text-slate-900">{student.name}</h1>
                   <Badge variant="emerald" size="sm" className="rounded-lg">
                     <CheckCircle2 className="h-3 w-3" /> Verified Student
                   </Badge>
                 </div>
 
-                <p className="text-xs text-slate-300 font-medium mt-0.5 flex items-center gap-2">
+                <p className="text-xs text-slate-600 font-medium mt-0.5 flex items-center gap-2">
                   {student.collegeName && (
                     <span className="flex items-center gap-1">
-                      <School className="h-3.5 w-3.5 text-amber-400" />
+                      <School className="h-3.5 w-3.5 text-orange-600" />
                       {student.collegeName}
                     </span>
                   )}
-                  <span className="text-slate-600">•</span>
+                  <span className="text-slate-300">•</span>
                   <span>{currentTrack?.name || "60-Day Tech Challenge"}</span>
                 </p>
               </div>
@@ -233,10 +229,10 @@ export default function PublicStreakProfilePage() {
 
             {/* Streak Counter Motif */}
             <div className="flex items-center gap-2">
-              <div className="p-3.5 rounded-xl flame-gradient flame-glow text-white flex items-center gap-2.5 shadow-xl">
-                <Flame className="h-7 w-7 fill-white text-amber-200 animate-pulse-subtle" />
+              <div className="p-3.5 rounded-xl flame-gradient flame-glow text-white flex items-center gap-2.5 shadow-md">
+                <Flame className="h-7 w-7 fill-white animate-pulse-subtle" />
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-amber-100 opacity-90">Verified Streak</div>
+                  <div className="text-[10px] uppercase font-bold text-orange-100 opacity-90">Verified Streak</div>
                   <div className="text-xl font-black">{student.currentStreak} Days</div>
                 </div>
               </div>
@@ -245,44 +241,44 @@ export default function PublicStreakProfilePage() {
 
           {/* Quick Metrics Strip */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-center">
-              <div className="text-[10px] uppercase font-bold text-slate-400">Current Streak</div>
-              <div className="text-lg font-black text-amber-400">{student.currentStreak} Days</div>
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
+              <div className="text-[10px] uppercase font-bold text-slate-500">Current Streak</div>
+              <div className="text-lg font-black text-orange-600">{student.currentStreak} Days</div>
             </div>
-            <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-center">
-              <div className="text-[10px] uppercase font-bold text-slate-400">Longest Streak</div>
-              <div className="text-lg font-black text-white">{student.longestStreak} Days</div>
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
+              <div className="text-[10px] uppercase font-bold text-slate-500">Longest Streak</div>
+              <div className="text-lg font-black text-slate-900">{student.longestStreak} Days</div>
             </div>
-            <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-center">
-              <div className="text-[10px] uppercase font-bold text-slate-400">Completed</div>
-              <div className="text-lg font-black text-emerald-400">{student.completedDays}/60</div>
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
+              <div className="text-[10px] uppercase font-bold text-slate-500">Completed</div>
+              <div className="text-lg font-black text-emerald-600">{student.completedDays}/60</div>
             </div>
           </div>
 
           {/* Progress Bar */}
           <div className="space-y-2">
-            <div className="flex justify-between text-xs font-semibold text-slate-300">
+            <div className="flex justify-between text-xs font-semibold text-slate-700">
               <span>Overall Challenge Completion</span>
-              <span className="text-amber-400">{Math.round((student.completedDays / 60) * 100)}%</span>
+              <span className="text-orange-700 font-bold">{Math.round((student.completedDays / 60) * 100)}%</span>
             </div>
             <ProgressBar value={student.completedDays} max={60} />
           </div>
 
           {/* 60-Cell Heatmap Grid */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold text-slate-200">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-800">
               <span>Verified 60-Day Commit Heatmap</span>
-              <span className="text-[11px] text-slate-400 font-mono">
+              <span className="text-[11px] text-slate-500 font-mono">
                 {student.completedDays} Shipped Commits
               </span>
             </div>
 
-            <div className="grid grid-cols-10 sm:grid-cols-12 md:grid-cols-15 gap-1.5 p-3.5 rounded-xl bg-slate-950/80 border border-slate-800">
+            <div className="grid grid-cols-10 sm:grid-cols-12 md:grid-cols-15 gap-1.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
               {dayCells.map((cell) => {
-                let bgClass = "bg-slate-800/80 border-slate-700/50 text-slate-500";
-                if (cell.status === "done") bgClass = "bg-emerald-500/80 border-emerald-400/50 text-emerald-950 font-extrabold";
-                else if (cell.status === "missed") bgClass = "bg-rose-500/30 border-rose-500/40 text-rose-300";
-                else if (cell.status === "today") bgClass = "flame-gradient text-white font-extrabold shadow-md";
+                let bgClass = "bg-white border-slate-200 text-slate-400";
+                if (cell.status === "done") bgClass = "bg-emerald-500 border-emerald-600 text-white font-extrabold shadow-xs";
+                else if (cell.status === "missed") bgClass = "bg-rose-100 border-rose-300 text-rose-700";
+                else if (cell.status === "today") bgClass = "flame-gradient text-white font-extrabold shadow-xs";
 
                 return (
                   <div
@@ -299,8 +295,8 @@ export default function PublicStreakProfilePage() {
 
           {/* Badges Section */}
           <div className="space-y-3 pt-2">
-            <div className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
-              <Trophy className="h-4 w-4 text-amber-400" />
+            <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <Trophy className="h-4 w-4 text-orange-600" />
               <span>Earned Achievements & Badges</span>
             </div>
 
@@ -313,12 +309,12 @@ export default function PublicStreakProfilePage() {
                     key={milestone.id}
                     className={`p-3 rounded-xl border flex flex-col items-center text-center text-xs ${
                       isUnlocked
-                        ? "bg-slate-950 border-amber-500/40 text-white"
-                        : "bg-slate-950/40 border-slate-800 text-slate-600 opacity-60"
+                        ? "bg-slate-50 border-orange-200 text-slate-900 shadow-xs"
+                        : "bg-slate-50/50 border-slate-200 text-slate-400 opacity-60"
                     }`}
                   >
-                    <div className="font-bold text-white mb-0.5">{milestone.title}</div>
-                    <div className="text-[10px] text-amber-400 font-medium">
+                    <div className="font-bold text-slate-900 mb-0.5">{milestone.title}</div>
+                    <div className="text-[10px] text-orange-700 font-medium">
                       {isUnlocked ? "✓ Unlocked" : `${milestone.days} Days`}
                     </div>
                   </div>
@@ -328,9 +324,9 @@ export default function PublicStreakProfilePage() {
           </div>
 
           {/* Copy Resume Profile URL Button */}
-          <div className="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-xs text-slate-300 font-medium flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-amber-400" />
+          <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-xs text-slate-600 font-medium flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-orange-600" />
               <span>Paste this verified link into your resume header or LinkedIn bio.</span>
             </div>
 
@@ -338,7 +334,7 @@ export default function PublicStreakProfilePage() {
               variant="primary"
               size="md"
               onClick={handleCopyLink}
-              className="w-full sm:w-auto py-2.5 px-5 shadow-lg shadow-amber-600/30 rounded-xl font-bold"
+              className="w-full sm:w-auto py-2.5 px-5 shadow-md shadow-orange-600/20 rounded-xl font-bold"
             >
               <Copy className="h-4 w-4" />
               <span>{copied ? "Link Copied to Clipboard! ✓" : "Copy Profile Link"}</span>
@@ -348,7 +344,7 @@ export default function PublicStreakProfilePage() {
       </main>
 
       {/* Minimal Footer Tagline */}
-      <footer className="max-w-3xl mx-auto w-full text-center py-6 text-xs text-slate-500">
+      <footer className="max-w-3xl mx-auto w-full text-center py-6 text-xs text-slate-500 font-medium">
         ABTalks 60 • Verified Public Streak Credential Page
       </footer>
     </div>

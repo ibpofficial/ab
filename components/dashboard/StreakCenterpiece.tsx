@@ -1,8 +1,12 @@
+"use client";
+
 import React from "react";
-import { Flame, Sparkles, RefreshCw, Trophy, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { Student } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Flame, ArrowRight, TrendingUp, CheckCircle2, Award } from "lucide-react";
 
 export interface StreakCenterpieceProps {
   student: Student;
@@ -11,100 +15,64 @@ export interface StreakCenterpieceProps {
 export function StreakCenterpiece({ student }: StreakCenterpieceProps) {
   const isZeroStreak = student.currentStreak === 0;
 
-  // Determine if student suffered a recent streak break/missed day
-  const hasMissedDayGap =
-    student.completedDays > 0 &&
-    student.longestStreak > student.currentStreak &&
-    !isZeroStreak;
-
   return (
-    <Card className="relative overflow-hidden p-6 bg-slate-900/90 border-amber-500/30 streak-card-glow">
-      {/* Background ambient glow */}
-      <div className="absolute -right-8 -top-8 w-40 h-40 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
-
+    <Card className="p-6 bg-white border border-slate-200 shadow-sm relative overflow-hidden space-y-4 rounded-xl text-slate-900">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        {/* Left Flame Motif + Count */}
+        {/* Streak Visual Motif */}
         <div className="flex items-center gap-4">
-          <div
-            className={`h-16 w-16 rounded-2xl flex items-center justify-center shadow-lg transition-transform ${
-              isZeroStreak
-                ? "bg-slate-800 border border-slate-700 text-slate-400"
-                : "flame-gradient flame-glow text-white animate-pulse-subtle"
-            }`}
-          >
-            <Flame
-              className={`h-9 w-9 ${
-                isZeroStreak ? "text-slate-500" : "fill-white text-amber-200"
-              }`}
-            />
+          <div className="h-16 w-16 rounded-xl flame-gradient flex items-center justify-center text-white shadow-md">
+            <Flame className="h-9 w-9 fill-white animate-pulse-subtle" />
           </div>
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                {isZeroStreak ? "Journey Begins" : "Current Commit Streak"}
+              <span className="text-xs font-bold uppercase tracking-wider text-orange-700">
+                Verified Streak Status
               </span>
-              {!isZeroStreak && (
-                <Badge variant="emerald" size="sm">
-                  🔥 Active
+              {isZeroStreak ? (
+                <Badge variant="flame" size="sm" className="rounded-lg">
+                  <TrendingUp className="h-3 w-3 text-orange-600" /> Day 1 Unlocked
+                </Badge>
+              ) : (
+                <Badge variant="emerald" size="sm" className="rounded-lg">
+                  <CheckCircle2 className="h-3 w-3" /> Streak Active
                 </Badge>
               )}
             </div>
 
-            {/* Zero Streak Positive Framing */}
-            {isZeroStreak ? (
-              <div className="space-y-0.5">
-                <h3 className="text-2xl font-extrabold text-white flex items-center gap-2">
-                  <span>Day 1 — Let&apos;s go!</span>
-                </h3>
-                <p className="text-xs text-amber-400 font-medium flex items-center gap-1">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Your streak starts today. Ship your first commit below!
-                </p>
-              </div>
-            ) : (
-              /* Active Streak Display */
-              <div className="space-y-0.5">
-                <h3 className="text-3xl font-extrabold text-white flex items-baseline gap-2">
-                  <span className="flame-text text-4xl">{student.currentStreak}</span>
-                  <span className="text-lg text-slate-300 font-bold">Days Continuous</span>
-                </h3>
-                {hasMissedDayGap ? (
-                  <p className="text-xs text-amber-400/90 font-medium flex items-center gap-1">
-                    <RefreshCw className="h-3.5 w-3.5 text-amber-400" />
-                    Streak reset — every builder has an off day. Restart today!
-                  </p>
-                ) : (
-                  <p className="text-xs text-emerald-400 font-medium flex items-center gap-1">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Great momentum! You&apos;re building an unshakeable habit.
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right Stats (Longest Streak & Milestone) */}
-        <div className="flex items-center gap-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-800/80">
-          <div className="px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-center min-w-[110px]">
-            <div className="text-[10px] uppercase font-bold text-slate-400 flex items-center justify-center gap-1">
-              <Trophy className="h-3 w-3 text-amber-400" /> Longest
-            </div>
-            <div className="text-lg font-extrabold text-white">
-              {student.longestStreak} <span className="text-xs font-normal text-slate-400">Days</span>
-            </div>
-          </div>
-
-          <div className="px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-center min-w-[110px]">
-            <div className="text-[10px] uppercase font-bold text-slate-400">
-              Completed
-            </div>
-            <div className="text-lg font-extrabold text-emerald-400">
-              {student.completedDays}/60
+            <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight flex items-baseline gap-2">
+              <span>{student.currentStreak} Days</span>
+              <span className="text-xs font-normal text-slate-500">
+                (Longest: <strong className="text-slate-800 font-bold">{student.longestStreak} Days</strong>)
+              </span>
             </div>
           </div>
         </div>
+
+        {/* Action Button */}
+        <div className="shrink-0">
+          <Link href={`/day/${student.completedDays + 1}`}>
+            <Button size="md" variant="primary" className="py-3 px-6 rounded-xl shadow-md shadow-orange-600/20">
+              <span>{isZeroStreak ? "Start Day 1 Challenge" : "Continue Day " + (student.completedDays + 1) + " Task"}</span>
+              <ArrowRight className="h-4 w-4 ml-1" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+      {/* Messaging / Positive framing */}
+      <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 font-medium leading-relaxed">
+        {isZeroStreak ? (
+          <span className="flex items-center gap-1.5 text-slate-800">
+            <Award className="h-4 w-4 text-orange-600 shrink-0" />
+            <span>Welcome to your 60-day challenge! Complete today&apos;s task brief to ignite your continuous commit streak.</span>
+          </span>
+        ) : (
+          <span className="flex items-center gap-1.5 text-slate-800">
+            <TrendingUp className="h-4 w-4 text-emerald-600 shrink-0" />
+            <span>Great momentum! You have completed <strong className="text-slate-900">{student.completedDays} of 60</strong> daily tasks. Keep shipping to maintain your public recruiter URL.</span>
+          </span>
+        )}
       </div>
     </Card>
   );
